@@ -7,14 +7,17 @@
   <meta name="description" content="AF-MPDT open-source 17 kW applied-field magnetoplasmadynamic thruster research platform." />
   <style>
     :root {
-      --bg: #0b0b0f;
-      --panel: rgba(18, 20, 30, 0.78);
-      --text: #f5f7fa;
-      --muted: #9aa4b4;
-      --steel: #5a6778;
-      --blue: #4da3ff;
-      --violet: #8c6bff;
-      --line: rgba(120, 152, 199, 0.35);
+      --bg: #1c1c1c;
+      --panel: rgba(34, 20, 16, 0.74);
+      --panel-strong: rgba(28, 17, 13, 0.92);
+      --text: #fff3ea;
+      --muted: #c4a995;
+      --steel: #8d6a57;
+      --blue: #ffb067;
+      --cyan: #ffd28d;
+      --teal: #ff7e5f;
+      --line: rgba(255, 176, 103, 0.22);
+      --glow: rgba(255, 176, 103, 0.2);
     }
 
     * { box-sizing: border-box; }
@@ -25,11 +28,27 @@
       margin: 0;
       font-family: Inter, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
       color: var(--text);
-      background: radial-gradient(circle at 20% 10%, rgba(77,163,255,.08), transparent 45%),
-                  radial-gradient(circle at 80% 20%, rgba(140,107,255,.08), transparent 42%),
+      background: radial-gradient(circle at 18% 8%, rgba(255,176,103,.12), transparent 34%),
+                  radial-gradient(circle at 82% 18%, rgba(255,126,95,.08), transparent 30%),
+                  linear-gradient(180deg, #1c1c1c 0%, #1e1e1e 42%, #1a1a1a 100%),
                   var(--bg);
       line-height: 1.55;
       overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      opacity: 0.42;
+      background-image:
+        linear-gradient(rgba(255, 188, 131, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 188, 131, 0.04) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(circle at center, black 48%, transparent 100%);
     }
 
     .bg-plasma {
@@ -38,17 +57,18 @@
       pointer-events: none;
       z-index: -1;
       background-image:
-        radial-gradient(900px 400px at var(--mx,50%) calc(var(--my,50%) - 15%), rgba(64,130,255,.15), transparent 62%),
-        radial-gradient(700px 320px at calc(100% - var(--mx,50%)) calc(100% - var(--my,50%)), rgba(140,107,255,.12), transparent 68%);
-      transition: background-position .2s linear;
+        radial-gradient(920px 420px at var(--mx,50%) calc(var(--my,50%) - 15%), rgba(255,176,103,.14), transparent 60%),
+        radial-gradient(720px 320px at calc(100% - var(--mx,50%)) calc(100% - var(--my,50%)), rgba(255,126,95,.1), transparent 68%);
+      transition: background-position .2s linear, opacity .3s ease;
     }
 
     nav {
       position: sticky;
       top: 0;
-      backdrop-filter: blur(8px);
-      background: rgba(11, 11, 15, 0.7);
-      border-bottom: 1px solid rgba(90, 103, 120, 0.25);
+      backdrop-filter: blur(14px);
+      background: rgba(24, 14, 10, 0.68);
+      border-bottom: 1px solid rgba(255, 176, 103, 0.14);
+      box-shadow: 0 10px 32px rgba(18, 9, 4, 0.22);
       z-index: 30;
     }
 
@@ -66,7 +86,7 @@
       letter-spacing: 0.08em;
       font-weight: 600;
       font-size: 0.9rem;
-      color: #e9eef8;
+      color: #fff0e4;
     }
 
     .nav-links {
@@ -80,10 +100,79 @@
       font-size: 0.84rem;
       color: var(--muted);
       text-decoration: none;
-      transition: color .2s;
+      transition: color .2s, text-shadow .2s ease;
     }
 
-    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover {
+      color: var(--text);
+      text-shadow: 0 0 18px rgba(255, 176, 103, 0.35);
+    }
+
+    .nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 44px;
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      color: #f7f9fc;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, transform .2s ease;
+    }
+
+    .nav-toggle:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(168, 191, 255, 0.28);
+      transform: translateY(-1px);
+    }
+
+    .nav-toggle-label {
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .nav-toggle-bars {
+      position: relative;
+      width: 16px;
+      height: 12px;
+      display: inline-block;
+    }
+
+    .nav-toggle-bars::before,
+    .nav-toggle-bars::after,
+    .nav-toggle-bars span {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transition: transform .2s ease, opacity .2s ease, top .2s ease;
+    }
+
+    .nav-toggle-bars::before { top: 0; }
+    .nav-toggle-bars span { top: 5px; }
+    .nav-toggle-bars::after { top: 10px; }
+
+    .nav-open .nav-toggle-bars::before {
+      top: 5px;
+      transform: rotate(45deg);
+    }
+
+    .nav-open .nav-toggle-bars span {
+      opacity: 0;
+    }
+
+    .nav-open .nav-toggle-bars::after {
+      top: 5px;
+      transform: rotate(-45deg);
+    }
 
     section {
       max-width: 1200px;
@@ -91,12 +180,84 @@
       padding: 84px 20px;
     }
 
+    .section-light {
+      max-width: none;
+      margin-top: 28px;
+      margin-bottom: 28px;
+      padding: 84px 0;
+      background: #ffffff;
+      color: #241d18;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-light .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .section-light h2,
+    .section-light h3,
+    .section-light strong {
+      color: #231913;
+    }
+
+    .section-light .lead,
+    .section-light p,
+    .section-light li {
+      color: #5f5046;
+    }
+
+    .section-light code {
+      color: #8c4f2b;
+    }
+
+    .section-light .card,
+    .section-light .node,
+    .section-light .media-card,
+    .section-light .media-note,
+    .section-light .video-frame,
+    .section-light .diagram,
+    .section-light .architecture-wrap {
+      background: #fffaf6;
+      border-color: rgba(214, 143, 93, 0.18);
+      box-shadow: 0 12px 28px rgba(30, 22, 18, 0.06);
+    }
+
+    .section-light .card:hover,
+    .section-light .node:hover,
+    .section-light .media-card:hover {
+      background: #fff6ef;
+      border-color: rgba(214, 143, 93, 0.34);
+      box-shadow: 0 16px 36px rgba(30, 22, 18, 0.1);
+    }
+
+    .section-light .tooltip {
+      background: rgba(255, 247, 239, 0.98);
+      color: #47362d;
+      border-color: rgba(214, 143, 93, 0.28);
+      box-shadow: 0 12px 24px rgba(30, 22, 18, 0.08);
+    }
+
+    .section-light .architecture::before {
+      background-image: linear-gradient(rgba(214, 143, 93, 0.06) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(214, 143, 93, 0.06) 1px, transparent 1px);
+    }
+
     .hero {
       min-height: 90vh;
       display: grid;
-      align-content: center;
-      gap: 22px;
+      grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+      align-items: center;
+      gap: 28px;
       padding-top: 100px;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 22px;
     }
 
     .eyebrow {
@@ -112,6 +273,11 @@
       line-height: 1.02;
       max-width: 900px;
       text-wrap: balance;
+      background: linear-gradient(135deg, #fff9f2 0%, #ffd29f 42%, #ff9b78 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 28px rgba(255, 176, 103, 0.08);
     }
 
     .hero p {
@@ -127,26 +293,186 @@
       margin-top: 8px;
     }
 
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .path-chip {
+      border: 1px solid rgba(255, 176, 103, .2);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #ffe9d6;
+      background: rgba(37, 22, 16, 0.62);
+      font-size: 0.84rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .hero-visual {
+      margin: 0;
+      border: 1px solid rgba(255, 176, 103, .2);
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(28, 17, 13, 0.88);
+      box-shadow: 0 24px 60px rgba(24, 10, 3, 0.38), 0 0 0 1px rgba(255, 176, 103, 0.04);
+      animation: heroFloat 8s ease-in-out infinite;
+    }
+
+    .hero-visual-stage {
+      position: relative;
+      min-height: 560px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 176, 103, 0.18), transparent 34%),
+        linear-gradient(180deg, rgba(31, 18, 13, 0.92), rgba(21, 12, 9, 0.98));
+    }
+
+    .hero-visual-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, transparent 22%, rgba(255,255,255,0.05) 32%, transparent 40%),
+        linear-gradient(180deg, transparent, rgba(255, 176, 103, 0.06));
+      mix-blend-mode: screen;
+    }
+
+    .hero-visual img {
+      display: block;
+      width: 100%;
+      min-height: 560px;
+      object-fit: contain;
+      object-position: center;
+      background: rgba(10, 14, 24, 0.8);
+    }
+
+    .hero-hotspots {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-hotspot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      pointer-events: auto;
+    }
+
+    .hero-hotspot-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 204, 140, 0.58);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #fff4ec;
+      background: rgba(31, 18, 13, 0.92);
+      cursor: pointer;
+      font-size: 0.84rem;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+      box-shadow: 0 8px 24px rgba(25, 12, 5, 0.24), 0 0 0 1px rgba(255, 176, 103, 0.06);
+    }
+
+    .hero-hotspot-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--blue);
+      box-shadow: 0 0 0 6px rgba(255, 176, 103, 0.14);
+      flex: 0 0 auto;
+      animation: pulseDot 2.8s ease-out infinite;
+    }
+
+    .hero-hotspot-card {
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 12px);
+      width: min(250px, 34vw);
+      padding: 12px 14px;
+      border: 1px solid rgba(122, 145, 181, .42);
+      border-radius: 16px;
+      background: rgba(6, 9, 16, 0.96);
+      color: #d5deee;
+      opacity: 0;
+      transform: translateX(-50%) translateY(10px);
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+    }
+
+    .hero-hotspot-card strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #eef4ff;
+      font-size: 0.94rem;
+    }
+
+    .hero-hotspot-card p {
+      margin: 0;
+      color: #c7d2e5;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .hero-hotspot:hover .hero-hotspot-button,
+    .hero-hotspot.active .hero-hotspot-button {
+      transform: scale(1.08);
+      border-color: rgba(255, 214, 163, 0.88);
+      background: rgba(36, 21, 15, 0.98);
+      box-shadow: 0 12px 28px rgba(34, 15, 5, 0.28), 0 0 24px rgba(255, 176, 103, 0.16);
+    }
+
+    .hero-hotspot:hover .hero-hotspot-card,
+    .hero-hotspot.active .hero-hotspot-card {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .hero-visual figcaption {
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(30, 18, 13, 0.4), rgba(30, 18, 13, 0.96));
+    }
+
+    .hero-kicker {
+      color: var(--blue);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .hero-visual strong {
+      font-size: 1rem;
+      color: #fff1e6;
+    }
+
+    .hero-visual span:last-child {
+      color: #e2c4b1;
+      font-size: 0.92rem;
+    }
+
     .btn {
-      border: 1px solid rgba(111, 152, 221, 0.55);
-      color: #ecf2ff;
+      border: 1px solid rgba(255, 176, 103, 0.36);
+      color: #fff7f1;
       text-decoration: none;
       padding: 11px 16px;
       border-radius: 999px;
       font-size: 0.9rem;
       transition: transform .2s, box-shadow .2s, background .2s;
-      background: rgba(31, 42, 63, 0.4);
+      background: linear-gradient(135deg, rgba(42, 23, 15, 0.92), rgba(64, 31, 19, 0.72));
     }
 
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 0 0 1px rgba(77,163,255,.45), 0 0 28px rgba(77,163,255,.2);
-      background: rgba(50, 74, 113, 0.5);
+      box-shadow: 0 0 0 1px rgba(255,176,103,.36), 0 0 28px rgba(255,176,103,.16);
+      background: linear-gradient(135deg, rgba(57, 30, 19, 0.96), rgba(81, 38, 23, 0.82));
     }
 
     .btn.secondary {
-      border-color: rgba(148, 122, 255, .45);
-      background: rgba(47, 34, 73, 0.35);
+      border-color: rgba(255, 126, 95, .34);
+      background: linear-gradient(135deg, rgba(50, 23, 16, 0.92), rgba(73, 29, 18, 0.72));
     }
 
     h2 {
@@ -171,20 +497,38 @@
     .card,
     .node {
       position: relative;
-      border: 1px solid rgba(122, 145, 181, .32);
+      border: 1px solid rgba(255, 176, 103, .16);
       background: var(--panel);
       border-radius: 14px;
       padding: 14px;
       cursor: pointer;
-      transition: border-color .2s, box-shadow .2s, transform .2s;
+      transition: border-color .22s, box-shadow .22s, transform .22s, background .22s;
       overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .card::before,
+    .node::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 0%, transparent 38%, rgba(255,255,255,0.08) 50%, transparent 62%, transparent 100%);
+      transform: translateX(-120%);
+      transition: transform .75s ease;
+      pointer-events: none;
     }
 
     .card:hover,
     .node:hover {
-      border-color: rgba(116, 177, 255, .7);
-      box-shadow: 0 0 0 1px rgba(103, 181, 255, .25), 0 8px 32px rgba(88, 131, 212, 0.15);
-      transform: translateY(-1px);
+      border-color: rgba(255, 176, 103, .42);
+      box-shadow: 0 0 0 1px rgba(255, 176, 103, .14), 0 12px 36px rgba(21, 10, 4, 0.24), 0 0 28px rgba(255,176,103,.08);
+      transform: translateY(-3px);
+      background: rgba(37, 22, 16, 0.88);
+    }
+
+    .card:hover::before,
+    .node:hover::before {
+      transform: translateX(120%);
     }
 
     .card h3,
@@ -203,16 +547,16 @@
       bottom: 12px;
       padding: 10px 12px;
       border-radius: 10px;
-      background: rgba(10, 12, 20, .88);
-      border: 1px solid rgba(120, 178, 255, .5);
-      color: #eaf0ff;
+      background: rgba(30, 18, 13, .92);
+      border: 1px solid rgba(255, 176, 103, .34);
+      color: #fff1e8;
       font-size: .82rem;
       line-height: 1.4;
       opacity: 0;
       transform: translateY(8px);
       pointer-events: none;
       transition: opacity .2s, transform .2s;
-      box-shadow: 0 0 20px rgba(77,163,255,.22);
+      box-shadow: 0 0 20px rgba(255,176,103,.16);
     }
 
     .card:hover .tooltip,
@@ -222,11 +566,12 @@
     }
 
     .architecture-wrap {
-      border: 1px solid rgba(113, 132, 162, .28);
+      border: 1px solid rgba(255, 176, 103, .16);
       border-radius: 18px;
       padding: 20px;
-      background: rgba(12, 15, 24, .62);
+      background: rgba(28, 18, 13, .72);
       overflow-x: auto;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
     }
 
     .architecture {
@@ -243,8 +588,8 @@
       content: "";
       position: absolute;
       inset: 0;
-      background-image: linear-gradient(rgba(122, 147, 194, 0.06) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(122, 147, 194, 0.06) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(255, 188, 131, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 188, 131, 0.05) 1px, transparent 1px);
       background-size: 26px 26px;
       pointer-events: none;
       mask-image: radial-gradient(circle at center, black 48%, transparent 100%);
@@ -274,9 +619,129 @@
       gap: 18px;
     }
 
+    .media-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .media-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .media-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .media-card {
+      border: 1px solid rgba(255, 176, 103, .16);
+      background: var(--panel);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+
+    .media-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255, 176, 103, .42);
+      box-shadow: 0 12px 36px rgba(21, 10, 4, 0.24), 0 0 24px rgba(255,176,103,.08);
+    }
+
+    .media-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      background: rgba(10, 14, 24, 0.8);
+    }
+
+    .media-card-body {
+      display: grid;
+      gap: 6px;
+      padding: 14px;
+    }
+
+    .media-card h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .media-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .video-shell {
+      display: grid;
+      gap: 14px;
+    }
+
+    .video-frame,
+    .media-note {
+      border: 1px solid rgba(255, 176, 103, .16);
+      background: rgba(30, 18, 13, 0.84);
+      border-radius: 18px;
+    }
+
+    .video-frame {
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+    }
+
+    .video-frame video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #05070c;
+    }
+
+    .media-empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      text-align: center;
+      color: #f6dfcf;
+      background: linear-gradient(160deg, rgba(57, 30, 19, 0.82), rgba(22, 12, 8, 0.96));
+    }
+
+    .media-empty.hidden {
+      display: none;
+    }
+
+    .media-note {
+      padding: 16px;
+    }
+
+    .media-note h3 {
+      margin: 0 0 10px;
+    }
+
+    .media-note p {
+      margin: 0;
+      color: #e0c2ad;
+    }
+
+    .guide-list {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: #e0c2ad;
+    }
+
+    .guide-list li + li {
+      margin-top: 8px;
+    }
+
     .diagram {
-      border: 1px solid rgba(122, 145, 181, .32);
-      background: rgba(14, 18, 28, 0.75);
+      border: 1px solid rgba(255, 176, 103, .16);
+      background: rgba(30, 18, 13, 0.82);
       border-radius: 16px;
       padding: 20px;
       min-height: 280px;
@@ -293,9 +758,9 @@
       width: min(92vw, 440px);
       height: 100vh;
       padding: 24px 22px;
-      background: rgba(7, 10, 17, 0.96);
-      border-left: 1px solid rgba(123, 154, 204, .42);
-      box-shadow: -8px 0 32px rgba(18, 38, 79, .45);
+      background: rgba(24, 14, 10, 0.98);
+      border-left: 1px solid rgba(255, 176, 103, .24);
+      box-shadow: -8px 0 32px rgba(20, 8, 3, .38);
       z-index: 50;
       transition: right .25s ease;
       overflow-y: auto;
@@ -306,7 +771,7 @@
     .close-btn {
       float: right;
       background: transparent;
-      border: 1px solid rgba(124, 143, 173, .5);
+      border: 1px solid rgba(255, 176, 103, .32);
       border-radius: 999px;
       color: var(--text);
       width: 34px;
@@ -315,13 +780,221 @@
     }
 
     .detail-panel h3 { margin-top: 40px; margin-bottom: 8px; }
-    .detail-panel p { color: #ccd5e7; }
-    .detail-panel ul { color: #c1cbe0; padding-left: 18px; }
+    .detail-panel p { color: #e0c8b8; }
+    .detail-panel ul { color: #e0c8b8; padding-left: 18px; }
+
+    .detail-media-section {
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(168, 191, 255, 0.12);
+      display: grid;
+      gap: 14px;
+    }
+
+    .detail-media-header {
+      display: grid;
+      gap: 4px;
+    }
+
+    .detail-media-kicker {
+      margin: 0;
+      color: #a8bfff;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .detail-media-note {
+      margin: 0;
+      color: #c8d1df;
+      font-size: 0.88rem;
+    }
+
+    .detail-preview-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .detail-gallery-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .detail-filter {
+      border: 1px solid rgba(168, 191, 255, 0.18);
+      border-radius: 999px;
+      background: rgba(38, 43, 53, 0.9);
+      color: #d8deea;
+      padding: 7px 11px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: background .18s ease, border-color .18s ease, color .18s ease;
+    }
+
+    .detail-filter.active {
+      border-color: rgba(168, 191, 255, 0.44);
+      background: rgba(66, 76, 95, 0.96);
+      color: #f4f7ff;
+    }
+
+    .detail-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail-image-card,
+    .detail-image-placeholder {
+      border: 1px solid rgba(168, 191, 255, 0.14);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(28, 33, 41, 0.92);
+      min-width: 0;
+    }
+
+    .detail-image-card {
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .detail-image-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(168, 191, 255, 0.3);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18), 0 0 20px rgba(168, 191, 255, 0.08);
+    }
+
+    .detail-image-frame,
+    .detail-image-placeholder-frame {
+      aspect-ratio: 4 / 3;
+      background: rgba(10, 14, 22, 0.86);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .detail-image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .22s ease;
+    }
+
+    .detail-image-card:hover .detail-image-frame img {
+      transform: scale(1.03);
+    }
+
+    .detail-image-body {
+      display: grid;
+      gap: 4px;
+      padding: 10px 11px 12px;
+    }
+
+    .detail-image-body strong,
+    .lightbox-caption strong {
+      font-size: 0.88rem;
+      color: #f1f5fd;
+    }
+
+    .detail-image-body p,
+    .lightbox-caption p {
+      margin: 0;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #c7d1e0;
+    }
+
+    .detail-image-placeholder {
+      border-style: dashed;
+      background: rgba(23, 27, 35, 0.72);
+    }
+
+    .detail-image-placeholder-frame {
+      color: #9aa7bc;
+      font-size: 0.82rem;
+      text-align: center;
+      padding: 14px;
+    }
+
+    .detail-image-placeholder-frame span {
+      display: block;
+      color: #728099;
+      font-size: 0.74rem;
+      margin-top: 6px;
+    }
+
+    .lightbox-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 10, 18, 0.9);
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      padding: 30px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+      z-index: 70;
+    }
+
+    .lightbox-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-frame {
+      margin: 0;
+      border: 1px solid rgba(168, 191, 255, 0.16);
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(20, 24, 32, 0.98);
+      box-shadow: 0 24px 56px rgba(0, 0, 0, 0.28);
+    }
+
+    .lightbox-frame img {
+      display: block;
+      width: min(72vw, 1100px);
+      max-height: 72vh;
+      object-fit: contain;
+      background: #0b1018;
+    }
+
+    .lightbox-caption {
+      padding: 14px 16px 16px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .lightbox-close,
+    .lightbox-nav {
+      border: 1px solid rgba(168, 191, 255, 0.18);
+      background: rgba(27, 33, 42, 0.92);
+      color: #eef3ff;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 22px;
+      right: 22px;
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+    }
+
+    .lightbox-nav {
+      width: 44px;
+      height: 44px;
+      font-size: 1.5rem;
+    }
 
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(2, 4, 8, 0.55);
+      background: rgba(20, 9, 4, 0.55);
       opacity: 0;
       pointer-events: none;
       transition: opacity .2s;
@@ -335,27 +1008,609 @@
 
     .reveal {
       opacity: 0;
-      transform: translateY(18px);
-      transition: opacity .55s ease, transform .55s ease;
+      transform: translateY(24px) scale(.985);
+      transition: opacity .75s ease, transform .75s cubic-bezier(.19,1,.22,1);
+      transition-delay: var(--reveal-delay, 0ms);
     }
 
     .reveal.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
+    }
+
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(255, 176, 103, 0.14); }
+      50% { box-shadow: 0 0 0 10px rgba(255, 176, 103, 0.06); }
     }
 
     .contact {
-      border-top: 1px solid rgba(103, 126, 160, 0.25);
+      border-top: 1px solid rgba(255, 176, 103, 0.16);
       margin-top: 20px;
       padding-top: 24px;
-      color: #c8d0e0;
+      color: #dfc2ad;
     }
 
-    @media (max-width: 900px) {
-      .split { grid-template-columns: 1fr; }
-      section { padding: 68px 18px; }
-      .nav-links { gap: 12px; }
-      .nav-links a { font-size: .8rem; }
+    body {
+      color: #eef2f7;
+      background:
+        radial-gradient(circle at 16% 10%, rgba(135, 164, 255, 0.08), transparent 32%),
+        radial-gradient(circle at 84% 12%, rgba(255, 255, 255, 0.04), transparent 30%),
+        linear-gradient(180deg, #1c1c1c 0%, #1c1c1c 100%);
+    }
+
+    body::before {
+      opacity: 0.22;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    .bg-plasma {
+      background-image:
+        radial-gradient(920px 420px at var(--mx,50%) calc(var(--my,50%) - 15%), rgba(135, 164, 255, 0.12), transparent 60%),
+        radial-gradient(720px 320px at calc(100% - var(--mx,50%)) calc(100% - var(--my,50%)), rgba(255, 255, 255, 0.05), transparent 68%);
+    }
+
+    nav {
+      background: rgba(28, 28, 28, 0.78);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .brand,
+    .nav-links a:hover {
+      color: #f7f9fc;
+      text-shadow: none;
+    }
+
+    .nav-links a {
+      color: #c7d0dc;
+    }
+
+    section {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .screen-section {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      min-height: 100svh;
+      display: flex;
+      scroll-margin-top: 72px;
+    }
+
+    .section-shell {
+      width: min(1240px, 100%);
+      min-height: 100svh;
+      margin: 0 auto;
+      padding: 92px 28px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .scroll-shell {
+      justify-content: flex-start;
+      overflow: visible;
+      overscroll-behavior: contain;
+    }
+
+    .screen-section.dark-section {
+      background: #1c1c1c;
+      color: #f2f5f9;
+    }
+
+    .screen-section.light-section {
+      background: #ffffff;
+      color: #141414;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .light-section,
+    .light-section .section-inner,
+    .screen-section.light-section + .screen-section.light-section {
+      margin: 0;
+      box-shadow: none;
+      border: 0;
+    }
+
+    .light-section .section-inner {
+      width: 100%;
+      max-width: none;
+      padding: 0;
+    }
+
+    .hero-section .section-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+      align-items: center;
+      gap: 28px;
+      padding-top: 100px;
+    }
+
+    .screen-section h1,
+    .screen-section h2,
+    .screen-section h3 {
+      margin-top: 0;
+    }
+
+    .dark-section .eyebrow,
+    .dark-section .hero-kicker {
+      color: #a8bfff;
+    }
+
+    .dark-section h1 {
+      background: none;
+      color: #f5f7fb;
+      -webkit-text-fill-color: initial;
+      text-shadow: none;
+    }
+
+    .dark-section h2,
+    .dark-section h3,
+    .dark-section strong,
+    .dark-section .brand {
+      color: #f5f7fb;
+    }
+
+    .dark-section p,
+    .dark-section .lead,
+    .dark-section li,
+    .dark-section .nav-links a,
+    .dark-section .hero-visual span:last-child {
+      color: #cfd6e2;
+    }
+
+    .dark-section .btn {
+      border-color: rgba(168, 191, 255, 0.34);
+      color: #eef3ff;
+      background: rgba(39, 43, 52, 0.92);
+    }
+
+    .dark-section .btn:hover {
+      box-shadow: 0 0 0 1px rgba(168,191,255,.32), 0 0 28px rgba(168,191,255,.12);
+      background: rgba(48, 53, 64, 0.98);
+    }
+
+    .dark-section .btn.secondary {
+      border-color: rgba(220, 227, 240, 0.22);
+      background: rgba(48, 53, 64, 0.78);
+    }
+
+    .dark-section .path-chip,
+    .dark-section .card,
+    .dark-section .node,
+    .dark-section .media-card,
+    .dark-section .media-note,
+    .dark-section .video-frame,
+    .dark-section .diagram,
+    .dark-section .architecture-wrap,
+    .dark-section .hero-visual,
+    .dark-section .hero-hotspot-button {
+      border-color: rgba(168, 191, 255, 0.16);
+      background: rgba(34, 38, 46, 0.9);
+      color: #eef3ff;
+      box-shadow: none;
+    }
+
+    .dark-section .hero-visual-stage {
+      background:
+        radial-gradient(circle at top right, rgba(168, 191, 255, 0.14), transparent 34%),
+        linear-gradient(180deg, rgba(34, 38, 46, 0.98), rgba(24, 27, 34, 1));
+    }
+
+    .dark-section .hero-visual-stage::after {
+      background:
+        linear-gradient(115deg, transparent 22%, rgba(255,255,255,0.045) 32%, transparent 40%),
+        linear-gradient(180deg, transparent, rgba(168, 191, 255, 0.05));
+    }
+
+    .dark-section .hero-visual figcaption {
+      background: linear-gradient(180deg, rgba(28, 28, 28, 0.36), rgba(21, 24, 30, 0.96));
+    }
+
+    .dark-section .hero-hotspot-dot {
+      background: #a8bfff;
+      box-shadow: 0 0 0 6px rgba(168, 191, 255, 0.14);
+    }
+
+    .dark-section .hero-hotspot-card,
+    .dark-section .tooltip {
+      background: rgba(23, 26, 33, 0.98);
+      border-color: rgba(168, 191, 255, 0.18);
+      color: #e9eef9;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .dark-section .tooltip {
+      color: #d9e1f0;
+    }
+
+    .dark-section .card:hover,
+    .dark-section .node:hover,
+    .dark-section .media-card:hover {
+      border-color: rgba(168, 191, 255, 0.34);
+      background: rgba(42, 46, 56, 0.96);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+    }
+
+    .dark-section .architecture::before {
+      background-image: linear-gradient(rgba(168, 191, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(168, 191, 255, 0.05) 1px, transparent 1px);
+    }
+
+    .dark-section .architecture-lines path {
+      stroke: rgba(168, 191, 255, 0.24);
+    }
+
+    .light-section h1,
+    .light-section h2,
+    .light-section h3,
+    .light-section strong {
+      color: #171717;
+    }
+
+    .light-section p,
+    .light-section .lead,
+    .light-section li {
+      color: #555b63;
+    }
+
+    .light-section code {
+      color: #2350a3;
+    }
+
+    .light-section .card,
+    .light-section .node,
+    .light-section .media-card,
+    .light-section .media-note,
+    .light-section .video-frame,
+    .light-section .diagram,
+    .light-section .architecture-wrap {
+      background: #fbfbfc;
+      border: 1px solid rgba(17, 24, 39, 0.08);
+      box-shadow: 0 12px 28px rgba(17, 24, 39, 0.06);
+    }
+
+    .light-section .card:hover,
+    .light-section .node:hover,
+    .light-section .media-card:hover {
+      background: #ffffff;
+      border-color: rgba(17, 24, 39, 0.16);
+      box-shadow: 0 16px 32px rgba(17, 24, 39, 0.1);
+    }
+
+    .light-section .cards {
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      align-content: start;
+    }
+
+    .light-section .tooltip {
+      background: rgba(255, 255, 255, 0.98);
+      border-color: rgba(17, 24, 39, 0.12);
+      color: #384250;
+      box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+    }
+
+    .page-dots {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 38;
+      display: grid;
+      gap: 10px;
+    }
+
+    .page-dot {
+      width: 10px;
+      height: 10px;
+      border: 1px solid rgba(90, 104, 130, 0.46);
+      border-radius: 999px;
+      background: rgba(90, 104, 130, 0.16);
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+
+    .page-dot.active {
+      transform: scale(1.3);
+      background: #a8bfff;
+      border-color: #a8bfff;
+    }
+
+    @media (min-width: 768px) and (max-width: 1199px) {
+      .nav-inner {
+        position: relative;
+        padding: 14px 18px;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 18px;
+        width: min(340px, calc(100vw - 36px));
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        background: rgba(28, 28, 28, 0.96);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        flex-wrap: nowrap;
+      }
+
+      .nav-open .nav-links {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .page-dots {
+        right: 12px;
+        gap: 8px;
+      }
+
+      .page-dot {
+        width: 9px;
+        height: 9px;
+      }
+
+      .section-shell {
+        width: 100%;
+        min-height: auto;
+        padding: 88px 24px 28px;
+      }
+
+      .hero-section .section-shell,
+      .split,
+      .media-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy {
+        gap: 18px;
+      }
+
+      .hero-visual-stage,
+      .hero-visual img {
+        min-height: clamp(420px, 52vw, 560px);
+      }
+
+      .cards,
+      .light-section .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .media-gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-hotspot-button {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+      }
+
+      .hero-hotspot-card {
+        width: min(240px, 40vw);
+      }
+
+      .detail-gallery-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 767px) {
+      nav {
+        top: 0;
+      }
+
+      .nav-inner {
+        position: relative;
+        padding: 12px 14px;
+        gap: 14px;
+      }
+
+      .brand {
+        max-width: calc(100% - 84px);
+        font-size: 0.78rem;
+        line-height: 1.3;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+        padding: 0 12px;
+      }
+
+      .nav-toggle-label {
+        display: none;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 14px;
+        right: 14px;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        background: rgba(28, 28, 28, 0.98);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        flex-wrap: nowrap;
+      }
+
+      .nav-open .nav-links {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        font-size: 0.86rem;
+      }
+
+      .page-dots {
+        display: none;
+      }
+
+      .screen-section {
+        min-height: auto;
+      }
+
+      .section-shell {
+        width: 100%;
+        min-height: auto;
+        padding: 78px 16px 22px;
+        gap: 16px;
+      }
+
+      .hero-section .section-shell,
+      .split,
+      .media-layout {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 11vw, 3.2rem);
+      }
+
+      h2 {
+        font-size: clamp(1.5rem, 7vw, 2rem);
+      }
+
+      .lead,
+      .hero p {
+        font-size: 0.98rem;
+        line-height: 1.7;
+      }
+
+      .cta-row,
+      .hero-meta {
+        gap: 10px;
+      }
+
+      .btn,
+      .path-chip {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .hero-visual {
+        border-radius: 18px;
+      }
+
+      .hero-visual-stage,
+      .hero-visual img {
+        min-height: clamp(300px, 72vw, 420px);
+      }
+
+      .hero-visual figcaption {
+        padding: 14px;
+      }
+
+      .hero-hotspot-button {
+        padding: 6px 9px;
+        font-size: 0.74rem;
+        gap: 6px;
+      }
+
+      .hero-hotspot-dot {
+        width: 8px;
+        height: 8px;
+      }
+
+      .hero-hotspot-card {
+        width: min(210px, calc(100vw - 48px));
+        padding: 10px 12px;
+        font-size: 0.8rem;
+      }
+
+      .cards,
+      .light-section .cards,
+      .media-gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .media-stack,
+      .video-shell {
+        gap: 12px;
+      }
+
+      .media-note,
+      .video-frame,
+      .diagram,
+      .architecture-wrap {
+        border-radius: 14px;
+      }
+
+      .architecture-wrap {
+        padding: 14px;
+      }
+
+      .architecture {
+        min-width: 720px;
+        padding: 14px;
+        gap: 12px;
+      }
+
+      .detail-panel {
+        width: 100vw;
+      }
+
+      .detail-preview-strip,
+      .detail-gallery-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-gallery-filters {
+        gap: 6px;
+      }
+
+      .detail-filter {
+        font-size: 0.74rem;
+        padding: 6px 10px;
+      }
+
+      .lightbox-modal {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .lightbox-frame img {
+        width: 100%;
+        max-height: 62vh;
+      }
+
+      .lightbox-nav {
+        justify-self: center;
+      }
     }
   </style>
 </head>
@@ -365,8 +1620,13 @@
   <nav>
     <div class="nav-inner">
       <div class="brand">AF-MPDT / OPEN RESEARCH PLATFORM</div>
-      <div class="nav-links">
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="siteNavLinks" aria-label="Toggle navigation">
+        <span class="nav-toggle-label">Menu</span>
+        <span class="nav-toggle-bars" aria-hidden="true"><span></span></span>
+      </button>
+      <div class="nav-links" id="siteNavLinks">
         <a href="#overview">Overview</a>
+        <a href="#media-library">Media</a>
         <a href="#architecture">Architecture</a>
         <a href="#thruster">Thruster</a>
         <a href="#magnetic">Magnetics</a>
@@ -378,75 +1638,143 @@
     </div>
   </nav>
 
-  <section class="hero reveal" id="top">
-    <div class="eyebrow">Applied-Field Magnetoplasmadynamic Thruster</div>
-    <h1>Beyond Chemical Limits</h1>
-    <p>
-      A fully open-source AF-MPDT research platform targeting 17 kW class operation.
-      Applied-field plasma propulsion, engineered for reproducibility.
-      The system couples thruster geometry, superconducting magnetic confinement,
-      high-vacuum infrastructure, and instrumentation into a hardware-first architecture.
-    </p>
-    <div class="cta-row">
-      <a class="btn" href="#architecture">Explore the System</a>
-      <a class="btn secondary" href="#open-source">View Research Platform</a>
+  <section class="hero reveal screen-section dark-section hero-section" id="top" data-dot="Home">
+    <div class="section-shell">
+      <div class="hero-copy">
+        <div class="eyebrow">Applied-Field Magnetoplasmadynamic Thruster</div>
+        <h1>Open AF-MPD Thruster</h1>
+        <p>
+          Use the setup overview on the right as your main homepage image.
+          Hover the labels to highlight each subsystem and show a short explanation,
+          so you can introduce the full experimental platform quickly.
+        </p>
+        <div class="cta-row">
+          <a class="btn" href="#top">Explore the Setup</a>
+          <a class="btn secondary" href="#media-library">Manage Media</a>
+        </div>
+        <div class="hero-meta">
+          <span class="path-chip">Editable folder: media-library/</span>
+          <span class="path-chip">Images: media-library/images/</span>
+          <span class="path-chip">Videos: media-library/videos/</span>
+        </div>
+      </div>
+      <figure class="hero-visual">
+        <div class="hero-visual-stage">
+          <img id="heroCustomImage" src="media-library/images/hero-main.svg" alt="Custom AF-MPDT hero image" />
+          <div class="hero-hotspots" id="heroHotspots" aria-label="Setup labels"></div>
+        </div>
+        <figcaption>
+          <span class="hero-kicker" id="heroImageLabel">Setup overview</span>
+          <strong id="heroImageTitle">Replace this image from the media library</strong>
+          <span id="heroImageCaption">Upload your overview image, then edit the label positions and descriptions in homepage-config.js.</span>
+        </figcaption>
+      </figure>
     </div>
   </section>
 
-  <section id="overview" class="reveal">
-    <h2>Project Overview</h2>
+  <section id="overview" class="reveal screen-section light-section" data-dot="Overview">
+    <div class="section-shell">
+      <div class="section-inner">
+        <h2>Project Overview</h2>
+        <p class="lead">
+          AF-MPDT is a high-power electric propulsion effort focused on controllable plasma acceleration under an externally applied magnetic field.
+          The platform is not a conceptual mock-up; it integrates a manufacturable thruster core, power delivery, superconducting field generation,
+          vacuum qualification, and diagnostics into one reproducible experimental stack.
+          Compared with chemical propulsion, performance is driven by electromagnetic energy transfer and current-path stability rather than combustion energetics,
+          making geometry-field coupling the dominant engineering variable.
+        </p>
+        <div class="cards">
+          <article class="card module" data-key="thruster">
+            <h3>Thruster</h3>
+            <p>Discharge channel and plume acceleration core.</p>
+            <div class="tooltip">Defines current closure and plasma momentum coupling. Stability depends on geometry and magnetic interaction.</div>
+          </article>
+          <article class="card module" data-key="anode">
+            <h3>Anode Geometry</h3>
+            <p>Attachment and acceleration region control.</p>
+            <div class="tooltip">Controls current attachment and acceleration zone. Strongly affects efficiency and discharge stability during scaling.</div>
+          </article>
+          <article class="card module" data-key="cathode">
+            <h3>Cathode</h3>
+            <p>Electron emission and arc sustainment.</p>
+            <div class="tooltip">Sets emission consistency and discharge startup reliability. Material and thermal loading are key constraints.</div>
+          </article>
+          <article class="card module" data-key="magnetic">
+            <h3>Magnetic Field System</h3>
+            <p>Applied-field confinement and acceleration.</p>
+            <div class="tooltip">External field shapes current paths and plume expansion. Enables controlled Lorentz-force dominated operation.</div>
+          </article>
+          <article class="card module" data-key="vacuum">
+            <h3>Vacuum System</h3>
+            <p>Pressure regime and contamination control.</p>
+            <div class="tooltip">Maintains plasma-relevant pressure and clean flow conditions. Pump staging controls repeatability and noise floor.</div>
+          </article>
+          <article class="card module" data-key="power">
+            <h3>Power Electronics</h3>
+            <p>17 kW-class delivery and transient handling.</p>
+            <div class="tooltip">Provides stable high-current operation with monitored transients. Electrical dynamics directly influence discharge behavior.</div>
+          </article>
+          <article class="card module" data-key="diag">
+            <h3>Diagnostics</h3>
+            <p>Measurement of force, plasma, and electrical states.</p>
+            <div class="tooltip">Converts tests into engineering evidence. Includes thrust, I-V, probe, and pressure channels with synchronized acquisition.</div>
+          </article>
+          <article class="card module" data-key="oss">
+            <h3>Open Source Platform</h3>
+            <p>CAD, PCB, code, test protocols.</p>
+            <div class="tooltip">Reproducibility layer for students and researchers. Hardware, software, and procedures are documented as transferable modules.</div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="media-library" class="reveal screen-section light-section" data-dot="Media">
+    <div class="section-shell">
+    <div class="section-inner">
+    <h2>Custom Media Library</h2>
     <p class="lead">
-      AF-MPDT is a high-power electric propulsion effort focused on controllable plasma acceleration under an externally applied magnetic field.
-      The platform is not a conceptual mock-up; it integrates a manufacturable thruster core, power delivery, superconducting field generation,
-      vacuum qualification, and diagnostics into one reproducible experimental stack.
-      Compared with chemical propulsion, performance is driven by electromagnetic energy transfer and current-path stability rather than combustion energetics,
-      making geometry-field coupling the dominant engineering variable.
+      All manually editable homepage media now lives in the separate <code>media-library</code> folder.
+      Replace images or videos there, then refresh the page to update the homepage.
     </p>
-    <div class="cards">
-      <article class="card module" data-key="thruster">
-        <h3>Thruster</h3>
-        <p>Discharge channel and plume acceleration core.</p>
-        <div class="tooltip">Defines current closure and plasma momentum coupling. Stability depends on geometry and magnetic interaction.</div>
-      </article>
-      <article class="card module" data-key="anode">
-        <h3>Anode Geometry</h3>
-        <p>Attachment and acceleration region control.</p>
-        <div class="tooltip">Controls current attachment and acceleration zone. Strongly affects efficiency and discharge stability during scaling.</div>
-      </article>
-      <article class="card module" data-key="cathode">
-        <h3>Cathode</h3>
-        <p>Electron emission and arc sustainment.</p>
-        <div class="tooltip">Sets emission consistency and discharge startup reliability. Material and thermal loading are key constraints.</div>
-      </article>
-      <article class="card module" data-key="magnetic">
-        <h3>Magnetic Field System</h3>
-        <p>Applied-field confinement and acceleration.</p>
-        <div class="tooltip">External field shapes current paths and plume expansion. Enables controlled Lorentz-force dominated operation.</div>
-      </article>
-      <article class="card module" data-key="vacuum">
-        <h3>Vacuum System</h3>
-        <p>Pressure regime and contamination control.</p>
-        <div class="tooltip">Maintains plasma-relevant pressure and clean flow conditions. Pump staging controls repeatability and noise floor.</div>
-      </article>
-      <article class="card module" data-key="power">
-        <h3>Power Electronics</h3>
-        <p>17 kW-class delivery and transient handling.</p>
-        <div class="tooltip">Provides stable high-current operation with monitored transients. Electrical dynamics directly influence discharge behavior.</div>
-      </article>
-      <article class="card module" data-key="diag">
-        <h3>Diagnostics</h3>
-        <p>Measurement of force, plasma, and electrical states.</p>
-        <div class="tooltip">Converts tests into engineering evidence. Includes thrust, I-V, probe, and pressure channels with synchronized acquisition.</div>
-      </article>
-      <article class="card module" data-key="oss">
-        <h3>Open Source Platform</h3>
-        <p>CAD, PCB, code, test protocols.</p>
-        <div class="tooltip">Reproducibility layer for students and researchers. Hardware, software, and procedures are documented as transferable modules.</div>
-      </article>
+    <div class="media-layout">
+      <div class="media-stack">
+        <div class="media-gallery" id="customGallery"></div>
+        <div class="media-note">
+          <h3>Manual Workflow</h3>
+          <ol class="guide-list">
+            <li>Put homepage images into <code>media-library/images/</code>.</li>
+            <li>Edit <code>homepage-config.js</code> to change the hero image path, label positions, and label descriptions.</li>
+            <li>Put videos into <code>media-library/videos/</code>.</li>
+            <li>After replacing a file with the same name, press <code>Ctrl + F5</code> to refresh without cache.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="video-shell">
+        <div class="video-frame">
+          <video id="projectVideo" controls playsinline preload="none" poster="media-library/images/video-poster.svg"></video>
+          <div class="media-empty" id="videoEmpty">Add your video file to media-library/videos/ and set the filename in homepage-config.js.</div>
+        </div>
+        <div class="media-note">
+          <h3 id="videoTitle">Project Video</h3>
+          <p id="videoDescription">The player uses poster-first display, metadata preload, and lazy source loading to keep the page fast.</p>
+        </div>
+        <div class="media-note">
+          <h3>Fast Load Setup</h3>
+          <ol class="guide-list">
+            <li>Use <code>.mp4</code> (H.264) or <code>.webm</code> for good browser compatibility.</li>
+            <li>Keep a lightweight poster image in <code>media-library/images/</code> so the page looks complete before playback.</li>
+            <li>Compress long videos before uploading to reduce first-play delay.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    </div>
     </div>
   </section>
 
-  <section id="architecture" class="reveal">
+  <section id="architecture" class="reveal screen-section dark-section" data-dot="Architecture">
+    <div class="section-shell">
     <h2>Interactive System Architecture</h2>
     <p class="lead">Hover any node for concise context. Click nodes to open engineering-level details, including status, materials, parameters, and next actions.</p>
     <div class="architecture-wrap">
@@ -474,9 +1802,11 @@
         <div class="node module" data-key="daq"><h3>Control & Data Acquisition</h3><p>ESP32 + Jetson pipeline</p><div class="tooltip">Synchronized capture for thrust, I-V, probe, and chamber channels.</div></div>
       </div>
     </div>
+    </div>
   </section>
 
-  <section id="thruster" class="reveal">
+  <section id="thruster" class="reveal screen-section dark-section" data-dot="Thruster">
+    <div class="section-shell">
     <h2>Thruster Core Section</h2>
     <div class="split">
       <div class="diagram">
@@ -508,9 +1838,11 @@
         </div>
       </div>
     </div>
+    </div>
   </section>
 
-  <section id="magnetic" class="reveal">
+  <section id="magnetic" class="reveal screen-section dark-section" data-dot="Magnetics">
+    <div class="section-shell">
     <h2>Magnetic Field Section</h2>
     <p class="lead">Applied-field operation uses YBCO/REBCO superconducting coils in a double-pancake structure with LN2 cooling. Field strength is tuned to improve confinement, reduce radial loss, and increase effective electromagnetic acceleration length.</p>
     <div class="cards">
@@ -518,9 +1850,11 @@
       <article class="card module" data-key="applied-field"><h3>Field Control</h3><p>Target current and B-field sweep plan.</p><div class="tooltip">Maps discharge stability versus applied field across operating points.</div></article>
       <article class="card module" data-key="magnetic"><h3>LN2 Thermal Loop</h3><p>Cryogenic support subsystem.</p><div class="tooltip">Supports superconducting state retention and repeatable test duty cycle.</div></article>
     </div>
+    </div>
   </section>
 
-  <section id="vacuum" class="reveal">
+  <section id="vacuum" class="reveal screen-section dark-section" data-dot="Vacuum">
+    <div class="section-shell">
     <h2>Vacuum Platform Section</h2>
     <p class="lead">The vacuum stack combines mechanical backing with high-vacuum stages (diffusion or turbo), chamber conductance management, and leak-sensitive sealing strategy. Pressure regime control is required for interpretable plasma diagnostics and repeatable thruster signatures.</p>
     <div class="cards">
@@ -528,9 +1862,11 @@
       <article class="card module" data-key="pump"><h3>Diffusion/Turbo Stage</h3><p>Low-pressure regime achievement.</p><div class="tooltip">Controls ultimate pressure and affects contamination and oil-backstreaming risk strategy.</div></article>
       <article class="card module" data-key="vacuum-chamber"><h3>Chamber & Feedthroughs</h3><p>Structural and electrical interface layer.</p><div class="tooltip">Material, seal, and thermal decisions directly affect leak rate and reliability.</div></article>
     </div>
+    </div>
   </section>
 
-  <section id="diagnostics" class="reveal">
+  <section id="diagnostics" class="reveal screen-section dark-section" data-dot="Diagnostics">
+    <div class="section-shell">
     <h2>Experimental Diagnostics</h2>
     <p class="lead">Instrumentation spans thrust measurement, current/voltage waveforms, Langmuir probe plasma characterization, and pressure sensing. DAQ is implemented with ESP32 edge capture and Jetson aggregation for synchronized analysis pipelines.</p>
     <div class="cards">
@@ -539,9 +1875,11 @@
       <article class="card module" data-key="diag"><h3>Langmuir Probe</h3><p>Density and temperature estimation.</p><div class="tooltip">Enables plume diagnostics and operating-point comparison.</div></article>
       <article class="card module" data-key="daq"><h3>ESP32 / Jetson DAQ</h3><p>Acquisition and experiment logging.</p><div class="tooltip">Supports multi-channel synchronization and reproducible test records.</div></article>
     </div>
+    </div>
   </section>
 
-  <section id="open-source" class="reveal">
+  <section id="open-source" class="reveal screen-section dark-section" data-dot="Open Source">
+    <div class="section-shell">
     <h2>Open Source & Reproducibility</h2>
     <div class="cards">
       <article class="card module" data-key="oss"><h3>CAD</h3><p>Manufacturable geometry packages.</p><div class="tooltip">Versioned assemblies for thruster, chamber interfaces, and fixtures.</div></article>
@@ -549,9 +1887,11 @@
       <article class="card module" data-key="oss"><h3>Control Code</h3><p>DAQ firmware and analysis scripts.</p><div class="tooltip">Enables repeatable test procedures and data reduction pipelines.</div></article>
       <article class="card module" data-key="oss"><h3>Documentation</h3><p>Protocols and experiment logs.</p><div class="tooltip">Turns isolated tests into transferable research workflows.</div></article>
     </div>
+    </div>
   </section>
 
-  <section id="vision" class="reveal">
+  <section id="vision" class="reveal screen-section dark-section" data-dot="Vision">
+    <div class="section-shell">
     <h2>Vision</h2>
     <p class="lead">The long-term objective is to make advanced propulsion experimentation accessible to student-led and research-lab teams without sacrificing engineering rigor. AF-MPDT is positioned as a shared infrastructure initiative: beyond chemical propulsion constraints, toward repeatable deep-space hardware development workflows.</p>
     <div class="contact" id="contact">
@@ -561,11 +1901,13 @@
       <p>Open-source contribution: github.com/af-mpdt</p>
       <p>Academic outreach: outreach@af-mpdt.org</p>
     </div>
+    </div>
   </section>
 
+  <div class="page-dots" id="pageDots" aria-label="Section navigation"></div>
   <div class="overlay" id="overlay"></div>
   <aside class="detail-panel" id="detailPanel" aria-live="polite" aria-label="Module Detail Panel">
-    <button class="close-btn" id="closePanel" aria-label="Close detail panel">×</button>
+    <button class="close-btn" id="closePanel" aria-label="Close detail panel">x</button>
     <h3 id="detailTitle">Module</h3>
     <p id="detailPurpose"></p>
     <p><strong>Current Design Status</strong></p>
@@ -578,8 +1920,30 @@
     <p id="detailChallenge"></p>
     <p><strong>Next Step</strong></p>
     <p id="detailNext"></p>
+    <div class="detail-media-section">
+      <div class="detail-media-header">
+        <p class="detail-media-kicker">Subsystem Images</p>
+        <p class="detail-media-note" id="detailMediaNote">Hover for preview. Click to pin a full engineering gallery.</p>
+      </div>
+      <div class="detail-preview-strip" id="detailPreviewStrip"></div>
+      <div class="detail-gallery-filters" id="detailGalleryFilters"></div>
+      <div class="detail-gallery-grid" id="detailGalleryGrid"></div>
+    </div>
   </aside>
+  <div class="lightbox-modal" id="lightboxModal" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer">x</button>
+    <button class="lightbox-nav prev" id="lightboxPrev" aria-label="Previous image">‹</button>
+    <figure class="lightbox-frame">
+      <img id="lightboxImage" alt="Expanded subsystem image" />
+      <figcaption class="lightbox-caption">
+        <strong id="lightboxTitle">Image</strong>
+        <p id="lightboxCaption"></p>
+      </figcaption>
+    </figure>
+    <button class="lightbox-nav next" id="lightboxNext" aria-label="Next image">›</button>
+  </div>
 
+  <script src="homepage-config.js"></script>
   <script>
     const moduleData = {
       thruster: {
@@ -710,6 +2074,70 @@
       }
     };
 
+    const defaultMediaConfig = {
+      hero: {
+        image: 'media-library/images/hero-main.svg',
+        alt: 'Custom AF-MPDT setup overview image',
+        fit: 'contain',
+        position: 'center',
+        label: 'Setup overview',
+        title: 'Replace this image from the media library',
+        caption: 'Upload your setup overview image, then edit the label positions below in homepage-config.js.',
+        hotspots: [
+          {
+            x: 18,
+            y: 24,
+            label: 'Power',
+            title: 'Power supply',
+            description: 'Introduce the power cabinet, main current path, and protection logic here.'
+          },
+          {
+            x: 56,
+            y: 34,
+            label: 'Thruster',
+            title: 'Thruster assembly',
+            description: 'Use this label for the thruster core, mounting structure, or discharge region.'
+          },
+          {
+            x: 76,
+            y: 62,
+            label: 'DAQ',
+            title: 'DAQ and controls',
+            description: 'Use this label for data acquisition, control electronics, or monitoring hardware.'
+          }
+        ]
+      },
+      gallery: [
+        {
+          src: 'media-library/images/gallery-01.svg',
+          alt: 'Custom gallery placeholder 1',
+          title: 'Gallery image 01',
+          description: 'Replace this file or point to a new filename in homepage-config.js.'
+        },
+        {
+          src: 'media-library/images/gallery-02.svg',
+          alt: 'Custom gallery placeholder 2',
+          title: 'Gallery image 02',
+          description: 'Use this card for a test stand, lab scene, or hardware close-up.'
+        },
+        {
+          src: 'media-library/images/gallery-03.svg',
+          alt: 'Custom gallery placeholder 3',
+          title: 'Gallery image 03',
+          description: 'You can add more cards by editing the gallery list in homepage-config.js.'
+        }
+      ],
+      video: {
+        title: 'Project Video',
+        description: 'Add an mp4 or webm file into media-library/videos and set the filename in homepage-config.js.',
+        poster: 'media-library/images/video-poster.svg',
+        mp4: '',
+        webm: ''
+      }
+    };
+
+    const mediaConfig = window.AFMPDTHomepageConfig || defaultMediaConfig;
+
     const detailPanel = document.getElementById('detailPanel');
     const overlay = document.getElementById('overlay');
     const closePanel = document.getElementById('closePanel');
@@ -721,10 +2149,663 @@
     const materialsEl = document.getElementById('detailMaterials');
     const challengeEl = document.getElementById('detailChallenge');
     const nextEl = document.getElementById('detailNext');
+    const heroImageEl = document.getElementById('heroCustomImage');
+    const heroImageLabelEl = document.getElementById('heroImageLabel');
+    const heroImageTitleEl = document.getElementById('heroImageTitle');
+    const heroImageCaptionEl = document.getElementById('heroImageCaption');
+    const heroHotspotsEl = document.getElementById('heroHotspots');
+    const customGalleryEl = document.getElementById('customGallery');
+    const projectVideoEl = document.getElementById('projectVideo');
+    const videoEmptyEl = document.getElementById('videoEmpty');
+    const videoTitleEl = document.getElementById('videoTitle');
+    const videoDescriptionEl = document.getElementById('videoDescription');
+    const pageDotsEl = document.getElementById('pageDots');
+    const detailPreviewStripEl = document.getElementById('detailPreviewStrip');
+    const detailGalleryFiltersEl = document.getElementById('detailGalleryFilters');
+    const detailGalleryGridEl = document.getElementById('detailGalleryGrid');
+    const detailMediaNoteEl = document.getElementById('detailMediaNote');
+    const navEl = document.querySelector('nav');
+    const navToggleEl = document.getElementById('navToggle');
+    const navLinksEl = document.getElementById('siteNavLinks');
+    const lightboxModalEl = document.getElementById('lightboxModal');
+    const lightboxImageEl = document.getElementById('lightboxImage');
+    const lightboxTitleEl = document.getElementById('lightboxTitle');
+    const lightboxCaptionEl = document.getElementById('lightboxCaption');
+    const lightboxCloseEl = document.getElementById('lightboxClose');
+    const lightboxPrevEl = document.getElementById('lightboxPrev');
+    const lightboxNextEl = document.getElementById('lightboxNext');
+    let detailCloseTimer = null;
+    let detailPinned = false;
+    let detailPanelKey = null;
+    let imageCatalog = [];
+    let activeGalleryImages = [];
+    let activeGalleryFilter = 'all';
+    let activeLightboxIndex = 0;
 
-    function openDetail(key) {
+    const imageCategoryOrder = ['overview', 'closeup', 'setup', 'iteration', 'results'];
+
+    const imageCategoryLabels = {
+      all: 'All',
+      overview: 'Overview',
+      closeup: 'Close-up',
+      setup: 'Setup',
+      iteration: 'Iteration',
+      results: 'Results'
+    };
+
+    const moduleImageProfiles = {
+      thruster: {
+        sections: ['thruster'],
+        subsystems: ['thruster-core', 'anode'],
+        tags: ['thruster', 'nozzle', 'insulator', 'assembly'],
+        preferredTypes: ['setup', 'closeup', 'iteration', 'overview'],
+        placeholders: ['Subsystem Overview', 'Close-up Detail', 'Iteration Comparison']
+      },
+      'thruster-core': {
+        sections: ['thruster'],
+        subsystems: ['thruster-core'],
+        tags: ['thruster', 'vacuum', 'assembly', 'setup'],
+        preferredTypes: ['setup', 'closeup', 'iteration', 'overview'],
+        placeholders: ['Subsystem Overview', 'Close-up Detail', 'Experimental Setup']
+      },
+      anode: {
+        sections: ['thruster'],
+        subsystems: ['anode', 'thruster-core'],
+        tags: ['anode', 'nozzle', 'iteration', 'assembly'],
+        preferredTypes: ['iteration', 'setup', 'closeup', 'overview'],
+        placeholders: ['Anode Overview', 'Close-up Detail', 'Iteration Comparison']
+      },
+      cathode: {
+        sections: ['power', 'thruster'],
+        subsystems: ['cathode', 'power'],
+        tags: ['cathode', 'feedthrough', 'copper', 'power'],
+        preferredTypes: ['closeup', 'setup', 'overview', 'iteration'],
+        placeholders: ['Cathode Overview', 'Close-up Detail', 'Experimental Setup']
+      },
+      magnetic: {
+        sections: ['magnetic'],
+        subsystems: ['magnetic'],
+        tags: ['magnetic', 'coil', 'driver', 'field'],
+        preferredTypes: ['overview', 'setup', 'closeup', 'iteration'],
+        placeholders: ['Coil Overview', 'Close-up Detail', 'Iteration Comparison']
+      },
+      'applied-field': {
+        sections: ['magnetic'],
+        subsystems: ['applied-field', 'magnetic'],
+        tags: ['magnetic', 'coil', 'field', 'driver'],
+        preferredTypes: ['setup', 'overview', 'closeup', 'iteration'],
+        placeholders: ['Applied Field Overview', 'Driver Detail', 'Iteration Comparison']
+      },
+      ybco: {
+        sections: ['ybco', 'magnetic'],
+        subsystems: ['ybco'],
+        tags: ['ybco', 'materials', 'container'],
+        preferredTypes: ['overview', 'iteration', 'closeup', 'setup'],
+        placeholders: ['YBCO Overview', 'Close-up Detail', 'Experimental Setup']
+      },
+      vacuum: {
+        sections: ['vacuum'],
+        subsystems: ['vacuum-chamber', 'pump'],
+        tags: ['vacuum', 'chamber', 'machining', 'tubing', 'regulator'],
+        preferredTypes: ['overview', 'closeup', 'setup', 'iteration'],
+        placeholders: ['Vacuum Overview', 'Seal Detail', 'Assembly Setup']
+      },
+      'vacuum-chamber': {
+        sections: ['vacuum'],
+        subsystems: ['vacuum-chamber'],
+        tags: ['vacuum', 'chamber', 'interior', 'shell', 'body'],
+        preferredTypes: ['closeup', 'overview', 'iteration', 'setup'],
+        placeholders: ['Chamber Overview', 'Close-up Detail', 'Iteration Comparison']
+      },
+      pump: {
+        sections: ['vacuum'],
+        subsystems: ['pump'],
+        tags: ['pump', 'regulator', 'gas-line', 'tubing'],
+        preferredTypes: ['overview', 'setup', 'closeup', 'iteration'],
+        placeholders: ['Pump Chain Overview', 'Hardware Detail', 'Experimental Setup']
+      },
+      power: {
+        sections: ['power', 'experimental-platform'],
+        subsystems: ['power', 'cathode'],
+        tags: ['power', 'copper', 'busbar', 'grounding', 'feedthrough'],
+        preferredTypes: ['closeup', 'setup', 'overview', 'iteration'],
+        placeholders: ['Power Overview', 'Feedthrough Detail', 'Bench Setup']
+      },
+      diag: {
+        sections: ['diagnostics', 'electronics'],
+        subsystems: ['diagnostics', 'electronics'],
+        tags: ['diagnostics', 'control-panel', 'electronics', 'bench', 'sensor'],
+        preferredTypes: ['overview', 'setup', 'closeup', 'results'],
+        placeholders: ['Diagnostics Overview', 'Sensor Detail', 'Bench Setup']
+      },
+      daq: {
+        sections: ['electronics', 'diagnostics'],
+        subsystems: ['daq', 'electronics'],
+        tags: ['electronics', 'pcb', 'control-panel', 'faceplate', 'relay'],
+        preferredTypes: ['closeup', 'overview', 'setup', 'iteration'],
+        placeholders: ['DAQ Overview', 'PCB Detail', 'Control Setup']
+      },
+      oss: {
+        sections: ['experimental-platform', 'iteration', 'electronics'],
+        subsystems: ['experimental-platform', 'open-source'],
+        tags: ['fabrication', 'welding', 'pcb', 'frame', 'assembly', 'iteration'],
+        preferredTypes: ['iteration', 'overview', 'setup', 'closeup'],
+        placeholders: ['Open Source Reference', 'Fabrication Detail', 'Iteration Comparison']
+      }
+    };
+
+    function isCompactViewport() {
+      return window.matchMedia('(max-width: 1199px)').matches;
+    }
+
+    function closeNavMenu() {
+      navEl.classList.remove('nav-open');
+      navToggleEl?.setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleNavMenu() {
+      const nextState = !navEl.classList.contains('nav-open');
+      navEl.classList.toggle('nav-open', nextState);
+      navToggleEl?.setAttribute('aria-expanded', nextState ? 'true' : 'false');
+    }
+
+    function getModuleImageProfile(key) {
+      return moduleImageProfiles[key] || {
+        sections: [],
+        subsystems: [],
+        tags: [],
+        preferredTypes: ['overview', 'closeup', 'setup', 'results', 'iteration'],
+        placeholders: ['Subsystem Overview', 'Close-up Detail', 'Experimental Setup']
+      };
+    }
+
+    function normalizeImageCategory(image) {
+      if (image.imageType === 'result') return 'results';
+      if (image.imageType === 'assembly') return 'setup';
+      if (image.imageType) return image.imageType;
+      const tags = image.tags || [];
+      if (tags.includes('results') || tags.includes('plasma') || tags.includes('ignition')) return 'results';
+      if (tags.includes('iteration') || tags.includes('fabrication') || tags.includes('machining') || tags.includes('welding') || tags.includes('process')) return 'iteration';
+      if (tags.includes('closeup') || tags.includes('hardware') || tags.includes('insulator') || tags.includes('seal-ring') || tags.includes('gasket') || tags.includes('fitting')) return 'closeup';
+      if (tags.includes('setup') || tags.includes('assembly') || tags.includes('bench') || tags.includes('platform') || tags.includes('control-panel') || tags.includes('test')) return 'setup';
+      return 'overview';
+    }
+
+    function extractImageFilename(value) {
+      if (!value) return '';
+      return value.split('/').pop();
+    }
+
+    function getHomepageFeaturedFiles() {
+      const heroMedia = { ...defaultMediaConfig.hero, ...(mediaConfig.hero || {}) };
+      const galleryItems = Array.isArray(mediaConfig.gallery) && mediaConfig.gallery.length
+        ? mediaConfig.gallery
+        : defaultMediaConfig.gallery;
+      return new Set([
+        extractImageFilename(heroMedia.image),
+        ...galleryItems.map((item) => extractImageFilename(item.src))
+      ].filter(Boolean));
+    }
+
+    function hasPlacement(image, target) {
+      const placements = image.placements || [];
+      return placements.includes(target) || placements.includes(target.split(':')[0]);
+    }
+
+    function getPlacementTargets(key, mode) {
+      const targets = [`${mode}:${key}`, mode];
+      if (mode === 'preview') targets.push(`detail:${key}`);
+      return targets;
+    }
+
+    function getTypeScore(category, preferredTypes = []) {
+      const index = preferredTypes.indexOf(category);
+      if (index === -1) return 0;
+      return Math.max(2, (preferredTypes.length - index) * 2);
+    }
+
+    function scoreImageForModule(image, profile, key, mode = 'detail') {
+      let score = 0;
+      const tags = image.tags || [];
+      const placements = getPlacementTargets(key, mode);
+      const category = normalizeImageCategory(image);
+      const placementMatch = placements.some((target) => hasPlacement(image, target));
+      const subsystemMatch = (profile.subsystems || []).includes(image.subsystem);
+      const sectionMatch = (profile.sections || []).includes(image.section);
+      const tagMatchCount = (profile.tags || []).reduce((count, tag) => count + (tags.includes(tag) ? 1 : 0), 0);
+
+      if (mode === 'preview' && !placementMatch && !subsystemMatch && tagMatchCount === 0) {
+        return -999;
+      }
+
+      if (placementMatch) score += 40;
+      if (subsystemMatch) score += 16;
+      if (sectionMatch) score += 8;
+      score += tagMatchCount * 2;
+      score += getTypeScore(category, profile.preferredTypes || []);
+      score += Number.isFinite(image.priority) ? image.priority : 0;
+      if (tags.includes('featured')) score += 2;
+      if (mode === 'preview' && getHomepageFeaturedFiles().has(image.file) && !hasPlacement(image, `hover:${key}`) && !tags.includes('featured')) {
+        score -= 12;
+      }
+      if (mode === 'preview' && tags.includes('support') && !placementMatch) {
+        score -= 4;
+      }
+      return score;
+    }
+
+    function getModuleImages(key, mode = 'detail') {
+      const profile = getModuleImageProfile(key);
+      return imageCatalog
+        .map((image) => ({
+          ...image,
+          category: normalizeImageCategory(image),
+          score: scoreImageForModule(image, profile, key, mode)
+        }))
+        .filter((image) => image.score > 0)
+        .sort((a, b) => b.score - a.score || (b.priority || 0) - (a.priority || 0) || a.title.localeCompare(b.title));
+    }
+
+    function pickBalancedImages(images, preferredTypes = [], maxItems = 3) {
+      const selected = [];
+      const usedFiles = new Set();
+      const usedSeries = new Set();
+      const typeOrder = [...new Set([...(preferredTypes || []), ...images.map((image) => image.category)])];
+
+      const tryAddImage = (image) => {
+        if (!image || selected.length >= maxItems) return false;
+        if (usedFiles.has(image.file)) return false;
+        const series = image.series || image.file;
+        const hasUnusedUniqueSeries = images.some((candidate) => {
+          const candidateSeries = candidate.series || candidate.file;
+          return !usedFiles.has(candidate.file) && candidateSeries !== series && !usedSeries.has(candidateSeries);
+        });
+        if (usedSeries.has(series) && hasUnusedUniqueSeries) return false;
+        selected.push(image);
+        usedFiles.add(image.file);
+        usedSeries.add(series);
+        return true;
+      };
+
+      typeOrder.forEach((type) => {
+        if (selected.length >= maxItems) return;
+        const candidate = images.find((image) => image.category === type && !usedFiles.has(image.file) && !usedSeries.has(image.series || image.file));
+        tryAddImage(candidate);
+      });
+
+      images.forEach((image) => {
+        if (selected.length >= maxItems) return;
+        tryAddImage(image);
+      });
+
+      return selected;
+    }
+
+    function createImagePlaceholder(label) {
+      const card = document.createElement('div');
+      card.className = 'detail-image-placeholder';
+      card.innerHTML = `
+        <div class="detail-image-placeholder-frame">
+          Add Image
+          <span>${label}</span>
+        </div>
+      `;
+      return card;
+    }
+
+    function createDetailImageCard(image, index) {
+      const card = document.createElement('article');
+      card.className = 'detail-image-card';
+      card.innerHTML = `
+        <div class="detail-image-frame">
+          <img src="media-library/images/${image.file}" alt="${image.title}" loading="lazy" />
+        </div>
+        <div class="detail-image-body">
+          <strong>${image.title}</strong>
+          <p>${image.caption || image.title}</p>
+        </div>
+      `;
+      card.addEventListener('click', () => openLightbox(index));
+      return card;
+    }
+
+    function renderDetailFilters(images) {
+      detailGalleryFiltersEl.innerHTML = '';
+      const categories = ['all', ...imageCategoryOrder.filter((category) => images.some((image) => image.category === category))];
+      categories.forEach((category) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `detail-filter${activeGalleryFilter === category ? ' active' : ''}`;
+        button.textContent = imageCategoryLabels[category];
+        button.addEventListener('click', () => {
+          activeGalleryFilter = category;
+          renderDetailFilters(images);
+          renderDetailGalleryGrid(images, detailPanel.dataset.mode === 'full');
+        });
+        detailGalleryFiltersEl.appendChild(button);
+      });
+    }
+
+    function renderDetailGalleryGrid(images, fullGallery) {
+      const filteredImages = activeGalleryFilter === 'all'
+        ? images
+        : images.filter((image) => image.category === activeGalleryFilter);
+      activeGalleryImages = filteredImages;
+      detailGalleryGridEl.innerHTML = '';
+
+      const visibleImages = fullGallery ? filteredImages : pickBalancedImages(filteredImages, getModuleImageProfile(detailPanelKey).preferredTypes, 4);
+      visibleImages.forEach((image, index) => {
+        detailGalleryGridEl.appendChild(createDetailImageCard(image, index));
+      });
+
+      const placeholders = getModuleImageProfile(detailPanelKey).placeholders || [];
+      if (!visibleImages.length) {
+        placeholders.forEach((label) => detailGalleryGridEl.appendChild(createImagePlaceholder(label)));
+        return;
+      }
+
+      if (!fullGallery) {
+        placeholders.slice(visibleImages.length, Math.max(visibleImages.length, 4)).forEach((label) => {
+          detailGalleryGridEl.appendChild(createImagePlaceholder(label));
+        });
+      }
+    }
+
+    function renderDetailMedia(key, fullGallery) {
+      const images = getModuleImages(key);
+      const previewImages = pickBalancedImages(getModuleImages(key, 'preview'), getModuleImageProfile(key).preferredTypes, 3);
+      detailPreviewStripEl.innerHTML = '';
+      previewImages.forEach((image, index) => {
+        detailPreviewStripEl.appendChild(createDetailImageCard(image, index));
+      });
+
+      const placeholders = getModuleImageProfile(key).placeholders || [];
+      if (previewImages.length < 3) {
+        placeholders.slice(previewImages.length, 3).forEach((label) => {
+          detailPreviewStripEl.appendChild(createImagePlaceholder(label));
+        });
+      }
+
+      activeGalleryFilter = 'all';
+      renderDetailFilters(images);
+      renderDetailGalleryGrid(images, fullGallery);
+      detailMediaNoteEl.textContent = fullGallery
+        ? 'Structured gallery with labels, grouped placeholders, and full-size viewer.'
+        : 'Hover preview shows the most relevant subsystem images. Click to pin the full gallery.';
+    }
+
+    async function loadImageCatalog() {
+      try {
+        const response = await fetch('media-library/image-catalog.json');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        imageCatalog = await response.json();
+      } catch (error) {
+        imageCatalog = [];
+      }
+      if (detailPanelKey) {
+        renderDetailMedia(detailPanelKey, detailPanel.dataset.mode === 'full');
+      }
+    }
+
+    function cancelDetailClose() {
+      if (detailCloseTimer) {
+        window.clearTimeout(detailCloseTimer);
+        detailCloseTimer = null;
+      }
+    }
+
+    function scheduleDetailClose() {
+      cancelDetailClose();
+      detailCloseTimer = window.setTimeout(() => {
+        closeDetail();
+      }, 180);
+    }
+
+    function applyImageWithFallback(imageEl, src, fallbackSrc, altText) {
+      imageEl.dataset.fallbackApplied = 'false';
+      imageEl.alt = altText;
+      imageEl.src = src || fallbackSrc;
+      imageEl.onerror = () => {
+        if (imageEl.dataset.fallbackApplied === 'true') return;
+        imageEl.dataset.fallbackApplied = 'true';
+        imageEl.src = fallbackSrc;
+      };
+    }
+
+    function renderHeroMedia() {
+      const heroMedia = { ...defaultMediaConfig.hero, ...(mediaConfig.hero || {}) };
+      applyImageWithFallback(heroImageEl, heroMedia.image, defaultMediaConfig.hero.image, heroMedia.alt);
+      heroImageEl.style.objectFit = heroMedia.fit || defaultMediaConfig.hero.fit;
+      heroImageEl.style.objectPosition = heroMedia.position || defaultMediaConfig.hero.position;
+      heroImageLabelEl.textContent = heroMedia.label;
+      heroImageTitleEl.textContent = heroMedia.title;
+      heroImageCaptionEl.textContent = heroMedia.caption;
+      renderHeroHotspots(heroMedia.hotspots || defaultMediaConfig.hero.hotspots);
+    }
+
+    function renderHeroHotspots(hotspots) {
+      heroHotspotsEl.innerHTML = '';
+
+      hotspots.forEach((spot) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'hero-hotspot';
+        wrapper.style.left = `${spot.x}%`;
+        wrapper.style.top = `${spot.y}%`;
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'hero-hotspot-button';
+        button.setAttribute('aria-label', spot.title || spot.label);
+
+        const dot = document.createElement('span');
+        dot.className = 'hero-hotspot-dot';
+
+        const text = document.createElement('span');
+        text.textContent = spot.label;
+
+        const card = document.createElement('div');
+        card.className = 'hero-hotspot-card';
+
+        const cardTitle = document.createElement('strong');
+        cardTitle.textContent = spot.title || spot.label;
+
+        const cardBody = document.createElement('p');
+        cardBody.textContent = spot.description || '';
+
+        button.appendChild(dot);
+        button.appendChild(text);
+        card.appendChild(cardTitle);
+        card.appendChild(cardBody);
+        wrapper.appendChild(button);
+        wrapper.appendChild(card);
+        heroHotspotsEl.appendChild(wrapper);
+
+        button.addEventListener('click', (event) => {
+          if (!isCompactViewport()) return;
+          event.stopPropagation();
+          heroHotspotsEl.querySelectorAll('.hero-hotspot.active').forEach((item) => {
+            if (item !== wrapper) item.classList.remove('active');
+          });
+          wrapper.classList.toggle('active');
+        });
+      });
+    }
+
+    function renderGallery() {
+      const galleryItems = Array.isArray(mediaConfig.gallery) && mediaConfig.gallery.length
+        ? mediaConfig.gallery
+        : defaultMediaConfig.gallery;
+
+      customGalleryEl.innerHTML = '';
+
+      galleryItems.forEach((item, index) => {
+        const fallbackItem = defaultMediaConfig.gallery[index % defaultMediaConfig.gallery.length];
+        const card = document.createElement('article');
+        card.className = 'media-card';
+
+        const image = document.createElement('img');
+        image.loading = 'lazy';
+        applyImageWithFallback(
+          image,
+          item.src,
+          fallbackItem.src,
+          item.alt || fallbackItem.alt
+        );
+
+        const body = document.createElement('div');
+        body.className = 'media-card-body';
+
+        const title = document.createElement('h3');
+        title.textContent = item.title || fallbackItem.title;
+
+        const description = document.createElement('p');
+        description.textContent = item.description || fallbackItem.description;
+
+        body.appendChild(title);
+        body.appendChild(description);
+        card.appendChild(image);
+        card.appendChild(body);
+        customGalleryEl.appendChild(card);
+      });
+    }
+
+    function setupVideo() {
+      const videoMedia = { ...defaultMediaConfig.video, ...(mediaConfig.video || {}) };
+      const sources = [];
+
+      videoTitleEl.textContent = videoMedia.title;
+      videoDescriptionEl.textContent = videoMedia.description;
+      projectVideoEl.poster = videoMedia.poster || defaultMediaConfig.video.poster;
+      projectVideoEl.setAttribute('aria-label', videoMedia.title);
+
+      if (videoMedia.webm) sources.push({ src: videoMedia.webm, type: 'video/webm' });
+      if (videoMedia.mp4) sources.push({ src: videoMedia.mp4, type: 'video/mp4' });
+
+      if (!sources.length) {
+        projectVideoEl.setAttribute('hidden', 'hidden');
+        videoEmptyEl.classList.remove('hidden');
+        return;
+      }
+
+      projectVideoEl.removeAttribute('hidden');
+      videoEmptyEl.classList.add('hidden');
+      projectVideoEl.innerHTML = '';
+
+      sources.forEach((source) => {
+        const sourceEl = document.createElement('source');
+        sourceEl.dataset.src = source.src;
+        sourceEl.type = source.type;
+        projectVideoEl.appendChild(sourceEl);
+      });
+
+      const loadVideoSources = () => {
+        if (projectVideoEl.dataset.loaded === 'true') return;
+        projectVideoEl.querySelectorAll('source').forEach((sourceEl) => {
+          sourceEl.src = sourceEl.dataset.src;
+        });
+        projectVideoEl.load();
+        projectVideoEl.dataset.loaded = 'true';
+      };
+
+      const videoObserver = new IntersectionObserver((entries, observerInstance) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          loadVideoSources();
+          observerInstance.disconnect();
+        });
+      }, { threshold: 0.35 });
+
+      videoObserver.observe(projectVideoEl);
+      projectVideoEl.addEventListener('pointerdown', loadVideoSources, { once: true });
+    }
+
+    renderHeroMedia();
+    renderGallery();
+    setupVideo();
+    loadImageCatalog();
+
+    const sectionPages = Array.from(document.querySelectorAll('.screen-section[data-dot]'));
+    sectionPages.forEach((section) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'page-dot';
+      dot.setAttribute('aria-label', section.dataset.dot || section.id);
+      dot.dataset.target = section.id;
+      dot.addEventListener('click', () => {
+        document.getElementById(dot.dataset.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      pageDotsEl.appendChild(dot);
+    });
+
+    function setActiveDot(id) {
+      pageDotsEl.querySelectorAll('.page-dot').forEach((dot) => {
+        dot.classList.toggle('active', dot.dataset.target === id);
+      });
+    }
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        setActiveDot(entry.target.id);
+      });
+    }, { threshold: 0.55 });
+
+    sectionPages.forEach((section) => sectionObserver.observe(section));
+    setActiveDot('top');
+
+    navToggleEl?.addEventListener('click', toggleNavMenu);
+    navLinksEl?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (isCompactViewport()) closeNavMenu();
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (isCompactViewport() && navEl.contains(event.target) === false) {
+        closeNavMenu();
+      }
+      if (heroHotspotsEl.contains(event.target)) return;
+      heroHotspotsEl.querySelectorAll('.hero-hotspot.active').forEach((item) => {
+        item.classList.remove('active');
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      if (!isCompactViewport()) {
+        closeNavMenu();
+      }
+    });
+
+    function openLightbox(index) {
+      if (!activeGalleryImages.length) return;
+      activeLightboxIndex = index;
+      const image = activeGalleryImages[activeLightboxIndex];
+      lightboxImageEl.src = `media-library/images/${image.file}`;
+      lightboxImageEl.alt = image.title;
+      lightboxTitleEl.textContent = image.title;
+      lightboxCaptionEl.textContent = image.caption || image.title;
+      lightboxModalEl.classList.add('open');
+      lightboxModalEl.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeLightbox() {
+      lightboxModalEl.classList.remove('open');
+      lightboxModalEl.setAttribute('aria-hidden', 'true');
+    }
+
+    function stepLightbox(direction) {
+      if (!activeGalleryImages.length) return;
+      activeLightboxIndex = (activeLightboxIndex + direction + activeGalleryImages.length) % activeGalleryImages.length;
+      openLightbox(activeLightboxIndex);
+    }
+
+    function openDetail(key, options = {}) {
       const info = moduleData[key];
       if (!info) return;
+      const { showOverlay = false, fullGallery = false, pin = false } = options;
+      cancelDetailClose();
+      detailPanelKey = key;
+      detailPinned = pin;
       titleEl.textContent = info.title;
       purposeEl.textContent = info.purpose;
       statusEl.textContent = info.status;
@@ -738,32 +2819,65 @@
         specsEl.appendChild(li);
       });
 
+      detailPanel.dataset.mode = fullGallery ? 'full' : 'preview';
+      renderDetailMedia(key, fullGallery);
       detailPanel.classList.add('open');
-      overlay.classList.add('show');
+      overlay.classList.toggle('show', showOverlay);
     }
 
     function closeDetail() {
+      cancelDetailClose();
+      detailPinned = false;
+      detailPanelKey = null;
       detailPanel.classList.remove('open');
       overlay.classList.remove('show');
     }
 
     document.querySelectorAll('.module').forEach(el => {
-      el.addEventListener('click', () => openDetail(el.dataset.key));
+      el.addEventListener('mouseenter', () => {
+        if (isCompactViewport() || detailPinned) return;
+        openDetail(el.dataset.key, { fullGallery: false });
+      });
+      el.addEventListener('mouseleave', () => {
+        if (isCompactViewport() || detailPinned) return;
+        scheduleDetailClose();
+      });
+      el.addEventListener('click', () => {
+        openDetail(el.dataset.key, { showOverlay: true, fullGallery: true, pin: true });
+      });
       el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') openDetail(el.dataset.key);
+        if (e.key === 'Enter' || e.key === ' ') openDetail(el.dataset.key, { showOverlay: true, fullGallery: true, pin: true });
       });
       el.setAttribute('tabindex', '0');
       el.setAttribute('role', 'button');
       el.setAttribute('aria-label', `${el.querySelector('h3')?.textContent || 'module'} details`);
     });
 
+    detailPanel.addEventListener('mouseenter', cancelDetailClose);
+    detailPanel.addEventListener('mouseleave', () => {
+      if (overlay.classList.contains('show') || detailPinned) return;
+      scheduleDetailClose();
+    });
+
     closePanel.addEventListener('click', closeDetail);
     overlay.addEventListener('click', closeDetail);
+    lightboxCloseEl.addEventListener('click', closeLightbox);
+    lightboxPrevEl.addEventListener('click', () => stepLightbox(-1));
+    lightboxNextEl.addEventListener('click', () => stepLightbox(1));
+    lightboxModalEl.addEventListener('click', (event) => {
+      if (event.target === lightboxModalEl) closeLightbox();
+    });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeDetail();
+      if (e.key === 'Escape') closeLightbox();
+      if (lightboxModalEl.classList.contains('open') && e.key === 'ArrowLeft') stepLightbox(-1);
+      if (lightboxModalEl.classList.contains('open') && e.key === 'ArrowRight') stepLightbox(1);
     });
 
     const reveals = document.querySelectorAll('.reveal');
+    reveals.forEach((item, index) => {
+      item.style.setProperty('--reveal-delay', `${Math.min(index * 70, 420)}ms`);
+    });
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');

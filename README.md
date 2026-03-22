@@ -6,11 +6,22 @@ Single-page interactive showcase for the AF-MPDT research platform.
 
 Open `index.html` directly in a browser, or run a simple server:
 
-```bash
-python3 -m http.server 8080
+```powershell
+py -3 -m http.server 8080
 ```
 
-Then visit `http://localhost:8080`.
+Then visit `http://127.0.0.1:8080`.
+
+## Custom media
+
+All manually editable homepage media now lives in [`media-library/`](./media-library/).
+
+- Images: `media-library/images/`
+- Videos: `media-library/videos/`
+- Homepage image, labels, and captions: `homepage-config.js`
+
+See [`media-library/README.md`](./media-library/README.md) for the step-by-step workflow.
+See [`QUICK-HOMEPAGE-EDIT.md`](./QUICK-HOMEPAGE-EDIT.md) for the shortest edit path.
 
 ## GitHub Pages + Custom Domain
 

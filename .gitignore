@@ -1,0 +1,8 @@
+.deploy-dist/
+.tools/
+.wrangler/
+node_modules/
+tmp/
+media-library/images/MVI_5554.MOV
+media-library/images/Project Plan.docx
+*.bundle
