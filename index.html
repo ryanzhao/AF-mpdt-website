@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AF-MPDT | Applied-Field Magnetoplasmadynamic Thruster</title>
+  <meta name="description" content="AF-MPDT open-source 17 kW applied-field magnetoplasmadynamic thruster research platform." />
+  <style>
+    :root {
+      --bg: #0b0b0f;
+      --panel: rgba(18, 20, 30, 0.78);
+      --text: #f5f7fa;
+      --muted: #9aa4b4;
+      --steel: #5a6778;
+      --blue: #4da3ff;
+      --violet: #8c6bff;
+      --line: rgba(120, 152, 199, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 10%, rgba(77,163,255,.08), transparent 45%),
+                  radial-gradient(circle at 80% 20%, rgba(140,107,255,.08), transparent 42%),
+                  var(--bg);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    .bg-plasma {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        radial-gradient(900px 400px at var(--mx,50%) calc(var(--my,50%) - 15%), rgba(64,130,255,.15), transparent 62%),
+        radial-gradient(700px 320px at calc(100% - var(--mx,50%)) calc(100% - var(--my,50%)), rgba(140,107,255,.12), transparent 68%);
+      transition: background-position .2s linear;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(11, 11, 15, 0.7);
+      border-bottom: 1px solid rgba(90, 103, 120, 0.25);
+      z-index: 30;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand {
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #e9eef8;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-links a {
+      font-size: 0.84rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 84px 20px;
+    }
+
+    .hero {
+      min-height: 90vh;
+      display: grid;
+      align-content: center;
+      gap: 22px;
+      padding-top: 100px;
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      font-size: 0.8rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 7vw, 6rem);
+      line-height: 1.02;
+      max-width: 900px;
+      text-wrap: balance;
+    }
+
+    .hero p {
+      color: #d6dce8;
+      max-width: 760px;
+      font-size: 1.08rem;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      border: 1px solid rgba(111, 152, 221, 0.55);
+      color: #ecf2ff;
+      text-decoration: none;
+      padding: 11px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      transition: transform .2s, box-shadow .2s, background .2s;
+      background: rgba(31, 42, 63, 0.4);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 1px rgba(77,163,255,.45), 0 0 28px rgba(77,163,255,.2);
+      background: rgba(50, 74, 113, 0.5);
+    }
+
+    .btn.secondary {
+      border-color: rgba(148, 122, 255, .45);
+      background: rgba(47, 34, 73, 0.35);
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+      line-height: 1.15;
+      letter-spacing: 0.01em;
+    }
+
+    .lead {
+      color: #d4d9e3;
+      max-width: 900px;
+      margin-bottom: 30px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .card,
+    .node {
+      position: relative;
+      border: 1px solid rgba(122, 145, 181, .32);
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 14px;
+      cursor: pointer;
+      transition: border-color .2s, box-shadow .2s, transform .2s;
+      overflow: hidden;
+    }
+
+    .card:hover,
+    .node:hover {
+      border-color: rgba(116, 177, 255, .7);
+      box-shadow: 0 0 0 1px rgba(103, 181, 255, .25), 0 8px 32px rgba(88, 131, 212, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .card h3,
+    .node h3 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+    }
+
+    .card p,
+    .node p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .tooltip {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(10, 12, 20, .88);
+      border: 1px solid rgba(120, 178, 255, .5);
+      color: #eaf0ff;
+      font-size: .82rem;
+      line-height: 1.4;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+      box-shadow: 0 0 20px rgba(77,163,255,.22);
+    }
+
+    .card:hover .tooltip,
+    .node:hover .tooltip {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .architecture-wrap {
+      border: 1px solid rgba(113, 132, 162, .28);
+      border-radius: 18px;
+      padding: 20px;
+      background: rgba(12, 15, 24, .62);
+      overflow-x: auto;
+    }
+
+    .architecture {
+      min-width: 860px;
+      position: relative;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .architecture::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(122, 147, 194, 0.06) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(122, 147, 194, 0.06) 1px, transparent 1px);
+      background-size: 26px 26px;
+      pointer-events: none;
+      mask-image: radial-gradient(circle at center, black 48%, transparent 100%);
+    }
+
+    .architecture-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .architecture-lines path {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 2;
+      stroke-dasharray: 7 8;
+      animation: dash 16s linear infinite;
+    }
+
+    @keyframes dash {
+      to { stroke-dashoffset: -300; }
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 18px;
+    }
+
+    .diagram {
+      border: 1px solid rgba(122, 145, 181, .32);
+      background: rgba(14, 18, 28, 0.75);
+      border-radius: 16px;
+      padding: 20px;
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diagram svg { width: 100%; height: 100%; min-height: 240px; }
+
+    .detail-panel {
+      position: fixed;
+      top: 0;
+      right: -460px;
+      width: min(92vw, 440px);
+      height: 100vh;
+      padding: 24px 22px;
+      background: rgba(7, 10, 17, 0.96);
+      border-left: 1px solid rgba(123, 154, 204, .42);
+      box-shadow: -8px 0 32px rgba(18, 38, 79, .45);
+      z-index: 50;
+      transition: right .25s ease;
+      overflow-y: auto;
+    }
+
+    .detail-panel.open { right: 0; }
+
+    .close-btn {
+      float: right;
+      background: transparent;
+      border: 1px solid rgba(124, 143, 173, .5);
+      border-radius: 999px;
+      color: var(--text);
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+    }
+
+    .detail-panel h3 { margin-top: 40px; margin-bottom: 8px; }
+    .detail-panel p { color: #ccd5e7; }
+    .detail-panel ul { color: #c1cbe0; padding-left: 18px; }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 4, 8, 0.55);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+      z-index: 45;
+    }
+
+    .overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .contact {
+      border-top: 1px solid rgba(103, 126, 160, 0.25);
+      margin-top: 20px;
+      padding-top: 24px;
+      color: #c8d0e0;
+    }
+
+    @media (max-width: 900px) {
+      .split { grid-template-columns: 1fr; }
+      section { padding: 68px 18px; }
+      .nav-links { gap: 12px; }
+      .nav-links a { font-size: .8rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-plasma" aria-hidden="true"></div>
+
+  <nav>
+    <div class="nav-inner">
+      <div class="brand">AF-MPDT / OPEN RESEARCH PLATFORM</div>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#thruster">Thruster</a>
+        <a href="#magnetic">Magnetics</a>
+        <a href="#vacuum">Vacuum</a>
+        <a href="#diagnostics">Diagnostics</a>
+        <a href="#open-source">Open Source</a>
+        <a href="#vision">Vision</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero reveal" id="top">
+    <div class="eyebrow">Applied-Field Magnetoplasmadynamic Thruster</div>
+    <h1>Beyond Chemical Limits</h1>
+    <p>
+      A fully open-source AF-MPDT research platform targeting 17 kW class operation.
+      Applied-field plasma propulsion, engineered for reproducibility.
+      The system couples thruster geometry, superconducting magnetic confinement,
+      high-vacuum infrastructure, and instrumentation into a hardware-first architecture.
+    </p>
+    <div class="cta-row">
+      <a class="btn" href="#architecture">Explore the System</a>
+      <a class="btn secondary" href="#open-source">View Research Platform</a>
+    </div>
+  </section>
+
+  <section id="overview" class="reveal">
+    <h2>Project Overview</h2>
+    <p class="lead">
+      AF-MPDT is a high-power electric propulsion effort focused on controllable plasma acceleration under an externally applied magnetic field.
+      The platform is not a conceptual mock-up; it integrates a manufacturable thruster core, power delivery, superconducting field generation,
+      vacuum qualification, and diagnostics into one reproducible experimental stack.
+      Compared with chemical propulsion, performance is driven by electromagnetic energy transfer and current-path stability rather than combustion energetics,
+      making geometry-field coupling the dominant engineering variable.
+    </p>
+    <div class="cards">
+      <article class="card module" data-key="thruster">
+        <h3>Thruster</h3>
+        <p>Discharge channel and plume acceleration core.</p>
+        <div class="tooltip">Defines current closure and plasma momentum coupling. Stability depends on geometry and magnetic interaction.</div>
+      </article>
+      <article class="card module" data-key="anode">
+        <h3>Anode Geometry</h3>
+        <p>Attachment and acceleration region control.</p>
+        <div class="tooltip">Controls current attachment and acceleration zone. Strongly affects efficiency and discharge stability during scaling.</div>
+      </article>
+      <article class="card module" data-key="cathode">
+        <h3>Cathode</h3>
+        <p>Electron emission and arc sustainment.</p>
+        <div class="tooltip">Sets emission consistency and discharge startup reliability. Material and thermal loading are key constraints.</div>
+      </article>
+      <article class="card module" data-key="magnetic">
+        <h3>Magnetic Field System</h3>
+        <p>Applied-field confinement and acceleration.</p>
+        <div class="tooltip">External field shapes current paths and plume expansion. Enables controlled Lorentz-force dominated operation.</div>
+      </article>
+      <article class="card module" data-key="vacuum">
+        <h3>Vacuum System</h3>
+        <p>Pressure regime and contamination control.</p>
+        <div class="tooltip">Maintains plasma-relevant pressure and clean flow conditions. Pump staging controls repeatability and noise floor.</div>
+      </article>
+      <article class="card module" data-key="power">
+        <h3>Power Electronics</h3>
+        <p>17 kW-class delivery and transient handling.</p>
+        <div class="tooltip">Provides stable high-current operation with monitored transients. Electrical dynamics directly influence discharge behavior.</div>
+      </article>
+      <article class="card module" data-key="diag">
+        <h3>Diagnostics</h3>
+        <p>Measurement of force, plasma, and electrical states.</p>
+        <div class="tooltip">Converts tests into engineering evidence. Includes thrust, I-V, probe, and pressure channels with synchronized acquisition.</div>
+      </article>
+      <article class="card module" data-key="oss">
+        <h3>Open Source Platform</h3>
+        <p>CAD, PCB, code, test protocols.</p>
+        <div class="tooltip">Reproducibility layer for students and researchers. Hardware, software, and procedures are documented as transferable modules.</div>
+      </article>
+    </div>
+  </section>
+
+  <section id="architecture" class="reveal">
+    <h2>Interactive System Architecture</h2>
+    <p class="lead">Hover any node for concise context. Click nodes to open engineering-level details, including status, materials, parameters, and next actions.</p>
+    <div class="architecture-wrap">
+      <div class="architecture-lines" aria-hidden="true">
+        <svg viewBox="0 0 900 350" preserveAspectRatio="none" width="100%" height="100%">
+          <path d="M150,80 C240,80 260,80 345,80" />
+          <path d="M150,80 C210,140 250,190 345,200" />
+          <path d="M450,80 C560,80 620,80 740,80" />
+          <path d="M450,200 C560,200 620,200 740,200" />
+          <path d="M740,80 C760,120 760,165 740,200" />
+          <path d="M345,200 C450,250 570,280 740,300" />
+        </svg>
+      </div>
+      <div class="architecture">
+        <div class="node module" data-key="thruster-core"><h3>Thruster Core</h3><p>Discharge assembly</p><div class="tooltip">Includes anode-cathode pair, discharge region, and plume exit plane.</div></div>
+        <div class="node module" data-key="applied-field"><h3>Applied Magnetic Field</h3><p>Field-coupled acceleration</p><div class="tooltip">External B-field reconfigures current path and momentum transfer profile.</div></div>
+        <div class="node module" data-key="vacuum-chamber"><h3>Vacuum Chamber</h3><p>Plasma test environment</p><div class="tooltip">Low-pressure enclosure with feedthroughs, thermal shielding, and optical access.</div></div>
+
+        <div class="node module" data-key="anode"><h3>Anode Geometry</h3><p>Attachment profile</p><div class="tooltip">Geometry tuning is central for stable high-power operation and efficiency.</div></div>
+        <div class="node module" data-key="ybco"><h3>YBCO Coil</h3><p>Double pancake stack</p><div class="tooltip">Superconducting coil target: high current density with LN2 thermal margin.</div></div>
+        <div class="node module" data-key="pump"><h3>Pump Chain</h3><p>Backing + high-vac stage</p><div class="tooltip">Mechanical + diffusion/turbo stages set pressure floor and gas handling dynamics.</div></div>
+
+        <div class="node module" data-key="cathode"><h3>Cathode System</h3><p>Emission stability</p><div class="tooltip">Electron source reliability controls ignition margin and arc persistence.</div></div>
+        <div class="node module" data-key="power"><h3>Power Delivery</h3><p>17 kW pulse/DC control</p><div class="tooltip">Conditioning and protection network for high-current transients and diagnostics isolation.</div></div>
+        <div class="node module" data-key="daq"><h3>Control & Data Acquisition</h3><p>ESP32 + Jetson pipeline</p><div class="tooltip">Synchronized capture for thrust, I-V, probe, and chamber channels.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="thruster" class="reveal">
+    <h2>Thruster Core Section</h2>
+    <div class="split">
+      <div class="diagram">
+        <svg viewBox="0 0 500 250">
+          <defs>
+            <linearGradient id="plume" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#5fa8ff" stop-opacity="0.7" />
+              <stop offset="100%" stop-color="#9a7bff" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <rect x="40" y="90" width="95" height="70" rx="8" fill="#232b3d" stroke="#6f88ad" />
+          <rect x="135" y="95" width="110" height="60" rx="8" fill="#1a2233" stroke="#80a0d1" />
+          <rect x="245" y="100" width="78" height="50" rx="8" fill="#232b3d" stroke="#6f88ad" />
+          <path d="M323 125 C380 110, 420 110, 480 125 C420 140, 380 140, 323 125Z" fill="url(#plume)" />
+          <line x1="40" y1="80" x2="323" y2="80" stroke="#7db5ff" stroke-dasharray="8 7" />
+          <text x="46" y="84" fill="#cfe0ff" font-size="12">Current Path</text>
+          <text x="55" y="132" fill="#f2f6ff" font-size="12">Cathode</text>
+          <text x="165" y="132" fill="#f2f6ff" font-size="12">Discharge Region</text>
+          <text x="255" y="132" fill="#f2f6ff" font-size="12">Anode</text>
+          <text x="356" y="103" fill="#c5d7ff" font-size="12">Plasma Plume</text>
+        </svg>
+      </div>
+      <div>
+        <p class="lead">The thruster module resolves current attachment, ionization, Lorentz-force acceleration (J × B), and plume divergence as one coupled problem. Current anode iterations prioritize robust attachment and reduced discharge oscillation at higher power.</p>
+        <div class="cards">
+          <article class="card module" data-key="anode"><h3>Anode</h3><p>Primary geometry optimization target.</p><div class="tooltip">Focus: attachment control, thermal flux distribution, and erosion-sensitive surfaces.</div></article>
+          <article class="card module" data-key="cathode"><h3>Cathode</h3><p>Emission and startup reliability.</p><div class="tooltip">Emission consistency is critical for ignition repeatability and steady arc operation.</div></article>
+          <article class="card module" data-key="thruster-core"><h3>Discharge Channel</h3><p>Electromagnetic acceleration domain.</p><div class="tooltip">Defines where plasma momentum rises; geometry and field jointly shape plume quality.</div></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="magnetic" class="reveal">
+    <h2>Magnetic Field Section</h2>
+    <p class="lead">Applied-field operation uses YBCO/REBCO superconducting coils in a double-pancake structure with LN2 cooling. Field strength is tuned to improve confinement, reduce radial loss, and increase effective electromagnetic acceleration length.</p>
+    <div class="cards">
+      <article class="card module" data-key="ybco"><h3>YBCO / REBCO Coil</h3><p>High-current superconducting architecture.</p><div class="tooltip">Double-pancake winding with thermal and quench margin consideration.</div></article>
+      <article class="card module" data-key="applied-field"><h3>Field Control</h3><p>Target current and B-field sweep plan.</p><div class="tooltip">Maps discharge stability versus applied field across operating points.</div></article>
+      <article class="card module" data-key="magnetic"><h3>LN2 Thermal Loop</h3><p>Cryogenic support subsystem.</p><div class="tooltip">Supports superconducting state retention and repeatable test duty cycle.</div></article>
+    </div>
+  </section>
+
+  <section id="vacuum" class="reveal">
+    <h2>Vacuum Platform Section</h2>
+    <p class="lead">The vacuum stack combines mechanical backing with high-vacuum stages (diffusion or turbo), chamber conductance management, and leak-sensitive sealing strategy. Pressure regime control is required for interpretable plasma diagnostics and repeatable thruster signatures.</p>
+    <div class="cards">
+      <article class="card module" data-key="pump"><h3>Mechanical Backing Pump</h3><p>Roughing and throughput baseline.</p><div class="tooltip">Defines gas load preconditioning before high-vacuum stage engagement.</div></article>
+      <article class="card module" data-key="pump"><h3>Diffusion/Turbo Stage</h3><p>Low-pressure regime achievement.</p><div class="tooltip">Controls ultimate pressure and affects contamination and oil-backstreaming risk strategy.</div></article>
+      <article class="card module" data-key="vacuum-chamber"><h3>Chamber & Feedthroughs</h3><p>Structural and electrical interface layer.</p><div class="tooltip">Material, seal, and thermal decisions directly affect leak rate and reliability.</div></article>
+    </div>
+  </section>
+
+  <section id="diagnostics" class="reveal">
+    <h2>Experimental Diagnostics</h2>
+    <p class="lead">Instrumentation spans thrust measurement, current/voltage waveforms, Langmuir probe plasma characterization, and pressure sensing. DAQ is implemented with ESP32 edge capture and Jetson aggregation for synchronized analysis pipelines.</p>
+    <div class="cards">
+      <article class="card module" data-key="diag"><h3>Thrust Measurement</h3><p>Force stand and drift compensation.</p><div class="tooltip">Transforms plume behavior into quantitative performance metrics.</div></article>
+      <article class="card module" data-key="diag"><h3>I/V Monitoring</h3><p>High-bandwidth electrical channels.</p><div class="tooltip">Captures transient discharge dynamics tied to stability windows.</div></article>
+      <article class="card module" data-key="diag"><h3>Langmuir Probe</h3><p>Density and temperature estimation.</p><div class="tooltip">Enables plume diagnostics and operating-point comparison.</div></article>
+      <article class="card module" data-key="daq"><h3>ESP32 / Jetson DAQ</h3><p>Acquisition and experiment logging.</p><div class="tooltip">Supports multi-channel synchronization and reproducible test records.</div></article>
+    </div>
+  </section>
+
+  <section id="open-source" class="reveal">
+    <h2>Open Source & Reproducibility</h2>
+    <div class="cards">
+      <article class="card module" data-key="oss"><h3>CAD</h3><p>Manufacturable geometry packages.</p><div class="tooltip">Versioned assemblies for thruster, chamber interfaces, and fixtures.</div></article>
+      <article class="card module" data-key="oss"><h3>PCB / Electronics</h3><p>Power and instrumentation boards.</p><div class="tooltip">Schematics, board files, and bring-up notes with revision tracking.</div></article>
+      <article class="card module" data-key="oss"><h3>Control Code</h3><p>DAQ firmware and analysis scripts.</p><div class="tooltip">Enables repeatable test procedures and data reduction pipelines.</div></article>
+      <article class="card module" data-key="oss"><h3>Documentation</h3><p>Protocols and experiment logs.</p><div class="tooltip">Turns isolated tests into transferable research workflows.</div></article>
+    </div>
+  </section>
+
+  <section id="vision" class="reveal">
+    <h2>Vision</h2>
+    <p class="lead">The long-term objective is to make advanced propulsion experimentation accessible to student-led and research-lab teams without sacrificing engineering rigor. AF-MPDT is positioned as a shared infrastructure initiative: beyond chemical propulsion constraints, toward repeatable deep-space hardware development workflows.</p>
+    <div class="contact" id="contact">
+      <h3>Contact & Collaboration</h3>
+      <p>Research collaboration: research@af-mpdt.org</p>
+      <p>Engineering discussion: engineering@af-mpdt.org</p>
+      <p>Open-source contribution: github.com/af-mpdt</p>
+      <p>Academic outreach: outreach@af-mpdt.org</p>
+    </div>
+  </section>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="detail-panel" id="detailPanel" aria-live="polite" aria-label="Module Detail Panel">
+    <button class="close-btn" id="closePanel" aria-label="Close detail panel">×</button>
+    <h3 id="detailTitle">Module</h3>
+    <p id="detailPurpose"></p>
+    <p><strong>Current Design Status</strong></p>
+    <p id="detailStatus"></p>
+    <p><strong>Technical Snapshot</strong></p>
+    <ul id="detailSpecs"></ul>
+    <p><strong>Materials / Stack</strong></p>
+    <p id="detailMaterials"></p>
+    <p><strong>Key Engineering Challenge</strong></p>
+    <p id="detailChallenge"></p>
+    <p><strong>Next Step</strong></p>
+    <p id="detailNext"></p>
+  </aside>
+
+  <script>
+    const moduleData = {
+      thruster: {
+        title: 'Thruster Module',
+        purpose: 'Core MPDT discharge device converting electrical input into plasma jet momentum under applied magnetic coupling.',
+        status: 'Mechanical-electrical integration baseline defined; iterative high-power stability tests in progress.',
+        specs: ['Target electrical class: 17 kW', 'Coupled anode-cathode discharge channel', 'Lorentz-force dominated acceleration regime'],
+        materials: 'Copper-alloy and refractory inserts under thermal-load review.',
+        challenge: 'Balancing arc stability, erosion resistance, and thermal management at elevated current.',
+        next: 'Correlate plume behavior with geometry variants and applied field sweep matrix.'
+      },
+      'thruster-core': {
+        title: 'Thruster Core',
+        purpose: 'Integrated anode, cathode, and discharge region subsystem controlling current closure and acceleration length.',
+        status: 'Prototype stack assembled with modular interfaces for geometry swaps.',
+        specs: ['Segmented inspection points', 'Current path instrumentation points', 'Plume axis alignment fixtures'],
+        materials: 'Conductive structural metals plus high-temperature insulators.',
+        challenge: 'Minimizing oscillatory discharge modes while preserving efficient coupling.',
+        next: 'Run comparative test campaign across modified internal profiles.'
+      },
+      anode: {
+        title: 'Anode Geometry',
+        purpose: 'Defines attachment region and local field/current distribution affecting stability and acceleration.',
+        status: 'Actively iterating from literature baselines and in-house experimental results.',
+        specs: ['Geometry family under A/B testing', 'Attachment-region thermal mapping', 'Surface treatment compatibility'],
+        materials: 'High-conductivity metals with erosion-tolerant surface options.',
+        challenge: 'Preventing unstable attachment migration at high load.',
+        next: 'Deploy revised contour with expanded diagnostic ports for plume correlation.'
+      },
+      cathode: {
+        title: 'Cathode System',
+        purpose: 'Provides electron emission and startup reliability for sustained plasma discharge.',
+        status: 'Emission stability characterization underway across duty-cycle conditions.',
+        specs: ['Startup sequence logic', 'Emitter thermal envelope tracking', 'Current-handling validation'],
+        materials: 'Refractory emitter elements and thermally managed mount structure.',
+        challenge: 'Maintaining stable emission without accelerated wear.',
+        next: 'Refine emitter thermal conditioning and ignition repeatability.'
+      },
+      magnetic: {
+        title: 'Magnetic Field System',
+        purpose: 'Applies external magnetic flux to shape plasma confinement and J × B acceleration behavior.',
+        status: 'Field architecture fixed; integration with thruster-vacuum assembly ongoing.',
+        specs: ['External coil-centered topology', 'Field profile sweep capability', 'Coil-structure alignment controls'],
+        materials: 'Superconducting tapes, structural supports, cryogenic interfaces.',
+        challenge: 'Field uniformity and mechanical/thermal compatibility under test operation.',
+        next: 'Validate field-plume coupling with synchronized diagnostics.'
+      },
+      'applied-field': {
+        title: 'Applied Field Control',
+        purpose: 'Control layer for current and field-strength scheduling during experiments.',
+        status: 'Drive profiles defined for first systematic operating map.',
+        specs: ['Step and ramp profile support', 'Safety interlock boundaries', 'Coupled discharge log tagging'],
+        materials: 'Current leads, sensing harnesses, and controlled power interfaces.',
+        challenge: 'Avoiding unstable transitions at regime boundaries.',
+        next: 'Integrate adaptive set-point logic with DAQ-driven alerts.'
+      },
+      ybco: {
+        title: 'YBCO Coil Stack',
+        purpose: 'Superconducting magnetic source using double-pancake REBCO/YBCO winding architecture.',
+        status: 'Coil concept and thermal strategy defined; manufacturing path under validation.',
+        specs: ['Double-pancake structure', 'LN2 cooling interface', 'Target high-current operation'],
+        materials: 'YBCO/REBCO tape, insulating layers, mechanical clamping components.',
+        challenge: 'Cryogenic stability and quench-risk mitigation under dynamic loading.',
+        next: 'Bench-test coil subsystem before full platform integration.'
+      },
+      'vacuum-chamber': {
+        title: 'Vacuum Chamber',
+        purpose: 'Provides controlled low-pressure environment for plasma discharge and diagnostics.',
+        status: 'Chamber architecture finalized with feedthrough and view-port routing.',
+        specs: ['Multi-port diagnostic interface', 'Pressure regime monitoring', 'Thermal and sealing review points'],
+        materials: 'Metal chamber body, high-vac seals, electrical feedthrough ceramics.',
+        challenge: 'Leak control and contamination suppression during repeated test cycles.',
+        next: 'Execute leak-rate qualification and conductance characterization.'
+      },
+      vacuum: {
+        title: 'Vacuum System',
+        purpose: 'Pump-chain and chamber subsystem for repeatable plasma-relevant pressure conditions.',
+        status: 'Stage sequencing and operating procedure drafted and instrumented.',
+        specs: ['Backing + high-vacuum staging', 'Pressure-band transitions', 'Gas load handling plan'],
+        materials: 'Pump assemblies, vacuum-rated piping, isolation valves.',
+        challenge: 'Maintaining stable low-pressure operation under dynamic plume load.',
+        next: 'Finalize operational envelope with integrated plume tests.'
+      },
+      pump: {
+        title: 'Pump Chain',
+        purpose: 'Generates required pressure regime through staged roughing and high-vacuum pumping.',
+        status: 'Layout and control sequence established.',
+        specs: ['Mechanical backing stage', 'Diffusion or turbo high-vac stage', 'Pressure interlock instrumentation'],
+        materials: 'Pump modules, traps/filters, stainless vacuum lines.',
+        challenge: 'Optimizing pump-down time without compromising cleanliness.',
+        next: 'Tune sequence parameters based on first full-system pump cycles.'
+      },
+      power: {
+        title: 'Power Delivery',
+        purpose: 'Supplies stable high-power input with monitoring, protection, and transient handling.',
+        status: 'Electrical architecture assembled for staged power ramp testing.',
+        specs: ['17 kW class capability', 'Transient and fault protection', 'Instrumented high-current paths'],
+        materials: 'Busbars/cables, switching/protection elements, sensing hardware.',
+        challenge: 'Suppressing electrical noise while preserving dynamic responsiveness.',
+        next: 'Close-loop tuning with discharge behavior feedback.'
+      },
+      diag: {
+        title: 'Diagnostics',
+        purpose: 'Measurement framework for thrust, plasma state, and electrical behavior.',
+        status: 'Core sensor channels active; calibration workflow in progress.',
+        specs: ['Thrust stand integration', 'Current/voltage capture', 'Langmuir probe and pressure channels'],
+        materials: 'Sensors, analog front-end boards, shielded acquisition paths.',
+        challenge: 'Cross-channel synchronization with low systematic drift.',
+        next: 'Establish unified uncertainty budget and automated report generation.'
+      },
+      daq: {
+        title: 'Control & Data Acquisition',
+        purpose: 'Coordinates test execution and synchronized data logging via ESP32 + Jetson pipeline.',
+        status: 'Acquisition stack online with timestamped experiment metadata.',
+        specs: ['Edge sampling + high-level aggregation', 'Experiment tagging and replay', 'Modular sensor interfaces'],
+        materials: 'Embedded controllers, compute module, data transport backbone.',
+        challenge: 'Deterministic timing under mixed-rate channels.',
+        next: 'Implement automated health checks and live anomaly flags.'
+      },
+      oss: {
+        title: 'Open Source Platform',
+        purpose: 'Publishes hardware, electronics, software, and protocols for reproducible propulsion research.',
+        status: 'Repository structure and documentation framework defined.',
+        specs: ['CAD/PCB/code versioning', 'Test protocol templates', 'Build and calibration notes'],
+        materials: 'Documentation toolchain, repository automation, release assets.',
+        challenge: 'Keeping engineering depth high while preserving accessibility.',
+        next: 'Release first integrated hardware + software reference package.'
+      }
+    };
+
+    const detailPanel = document.getElementById('detailPanel');
+    const overlay = document.getElementById('overlay');
+    const closePanel = document.getElementById('closePanel');
+
+    const titleEl = document.getElementById('detailTitle');
+    const purposeEl = document.getElementById('detailPurpose');
+    const statusEl = document.getElementById('detailStatus');
+    const specsEl = document.getElementById('detailSpecs');
+    const materialsEl = document.getElementById('detailMaterials');
+    const challengeEl = document.getElementById('detailChallenge');
+    const nextEl = document.getElementById('detailNext');
+
+    function openDetail(key) {
+      const info = moduleData[key];
+      if (!info) return;
+      titleEl.textContent = info.title;
+      purposeEl.textContent = info.purpose;
+      statusEl.textContent = info.status;
+      materialsEl.textContent = info.materials;
+      challengeEl.textContent = info.challenge;
+      nextEl.textContent = info.next;
+      specsEl.innerHTML = '';
+      info.specs.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        specsEl.appendChild(li);
+      });
+
+      detailPanel.classList.add('open');
+      overlay.classList.add('show');
+    }
+
+    function closeDetail() {
+      detailPanel.classList.remove('open');
+      overlay.classList.remove('show');
+    }
+
+    document.querySelectorAll('.module').forEach(el => {
+      el.addEventListener('click', () => openDetail(el.dataset.key));
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') openDetail(el.dataset.key);
+      });
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', `${el.querySelector('h3')?.textContent || 'module'} details`);
+    });
+
+    closePanel.addEventListener('click', closeDetail);
+    overlay.addEventListener('click', closeDetail);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDetail();
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(r => observer.observe(r));
+
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      document.documentElement.style.setProperty('--mx', `${x}%`);
+      document.documentElement.style.setProperty('--my', `${y}%`);
+    });
+  </script>
+</body>
+</html>
